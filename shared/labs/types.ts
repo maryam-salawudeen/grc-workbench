@@ -34,9 +34,13 @@ export type Attachment =
   | { kind: 'table'; title: string; columns: string[]; rows: string[][]; note?: string }
   | { kind: 'text'; title: string; body: string[] };
 
+export type Level = 'Easy' | 'Medium' | 'Hard';
+
 export interface Lab {
   id: string;
-  week: 1 | 2 | 3 | 4;
+  /** Original sequence the lab was written in; difficulty is `level`. */
+  week: number;
+  level: Level;
   /** Subject line, as it would appear in the inbox. */
   title: string;
   client: string;

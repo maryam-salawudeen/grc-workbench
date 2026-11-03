@@ -21,7 +21,7 @@ export function Home() {
     <div className="page home">
       <header className="home-head">
         <h1>{greeting()}</h1>
-        <p className="muted">You are a junior GRC analyst at {EMPLOYER.name}. Here is where to pick up.</p>
+        <p className="muted">You work as a GRC analyst at {EMPLOYER.name}. Here is where to pick up.</p>
       </header>
 
       {next ? (
@@ -29,6 +29,7 @@ export function Home() {
           <div className="small muted">{inProgress ? 'Continue where you left off' : 'Your next request'}</div>
           <h2>{next.title}</h2>
           <p className="muted">
+            <span className={`badge level-${next.level.toLowerCase()}`} style={{ marginRight: 8 }}>{next.level}</span>
             From {next.from.name}, {next.client} · about {next.minutes} minutes
           </p>
           <div className="home-progress">

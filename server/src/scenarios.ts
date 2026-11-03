@@ -78,7 +78,7 @@ export interface Scenario {
   risks: ModelRisk[];
 }
 
-export const LEVEL_NAMES = ['', 'Foundation', 'Developing', 'Intermediate', 'Advanced', 'Expert'];
+export const LEVEL_NAMES = ['', 'Easy', 'Easy', 'Medium', 'Hard', 'Hard'];
 
 export const SCENARIOS: Scenario[] = [
   // ---------------------------------------------------------------------------

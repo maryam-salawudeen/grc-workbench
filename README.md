@@ -1,6 +1,6 @@
 # GRC Workbench
 
-A GRC work simulator and CISSP study aid. You play a junior GRC analyst at a fictional consultancy: requests from client staff land in a work inbox, and each one is a hands-on lab with real attachments, marked steps and a debrief that links the work to the CISSP exam.
+A GRC work simulator and CISSP study aid. You work as a GRC analyst at a fictional consultancy: requests from client staff land in a work inbox, and each one is a hands-on lab with real attachments, marked steps and a debrief that links the work to the CISSP exam. Labs are rated Easy, Medium or Hard.
 
 **Live app: https://grc-workbench.vercel.app** (free, nothing to install; your work is saved privately in your own browser)
 
@@ -21,7 +21,7 @@ Built as a portfolio project and a CISSP / GRC study aid: every score in the app
 | **Findings** | Severity, owner, due dates and overdue tracking, linked to the requirement, assessment and risk |
 | **Policies** | Version, approval and review cycle with due-soon / overdue flags |
 | **Vendors** | Inherent tiering from data access, criticality and system access; reassessment schedule by tier |
-| **Work inbox (23 labs)** | Emails, tickets and Teams messages from client staff over a simulated first month: access reviews, phishing results, policy exceptions, vendor questionnaires, audit evidence, incident triage, change approval, risk acceptance, privacy breaches, firewall reviews, BIA targets, control testing, the ISO 27001 SoA, contract clauses, segregation of duties, patch priorities, board reporting, cloud responsibilities, tabletop lessons, audit responses and media disposal. Every step gives feedback straight away, and every lab covers one of the eight CISSP domains |
+| **Work inbox (37 labs)** | Emails, tickets and Teams messages from client staff, rated Easy, Medium or Hard: access reviews, phishing results, policy exceptions, vendor questionnaires, audit evidence, incident triage, change approval, risk acceptance, privacy breaches, firewall reviews, BIA targets, control testing, the ISO 27001 SoA, contract clauses, segregation of duties, patch priorities, board reporting, cloud responsibilities, tabletop lessons, audit responses and media disposal. Every step gives feedback straight away, and every lab covers one of the eight CISSP domains |
 | **Case studies** | Five fictional organisations (clinic, online store, municipality, logistics company, fintech) from foundation to expert. Each has a brief, an empty register, and "Check my work", which compares your risks with a model answer and explains every score |
 | **Website check** | Enter a URL for a passive review of HTTPS, the TLS certificate, security headers, cookie flags, version leaks and security.txt. Every result explains what it means, why it matters, how to fix it and what an analyst does next; problems can be raised as findings mapped to ISO 27001. Private and internal addresses are refused |
 | **Explain mode and glossary** | Jargon across the app is underlined: click any term for a plain-English explanation written for people new to GRC. Every page has a "How to use this page" guide, and the glossary lists 110+ terms |

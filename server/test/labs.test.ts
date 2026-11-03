@@ -26,7 +26,7 @@ test('there are 20+ labs with unique ids covering all eight CISSP domains', () =
   assert.ok(LABS.length >= 20, `${LABS.length} labs`);
   assert.equal(new Set(LABS.map((l) => l.id)).size, LABS.length);
   assert.deepEqual([...new Set(LABS.map((l) => l.domain))].sort(), [1, 2, 3, 4, 5, 6, 7, 8]);
-  for (const w of [1, 2, 3, 4]) assert.ok(LABS.some((l) => l.week === w), `week ${w}`);
+  for (const lv of ['Easy', 'Medium', 'Hard']) assert.ok(LABS.filter((l) => l.level === lv).length >= 5, `at least 5 ${lv} labs`);
 });
 
 test('every step has a valid answer key', () => {

@@ -4,6 +4,7 @@ export const WEEK4: Lab[] = [
   {
     id: 'board-slide',
     week: 4,
+    level: 'Hard',
     title: 'One slide for the board risk committee',
     client: 'Maple Ridge Credit Union',
     from: { name: 'Amara Okafor', role: 'Chief Information Security Officer' },
@@ -96,6 +97,7 @@ export const WEEK4: Lab[] = [
   {
     id: 'shared-responsibility',
     week: 4,
+    level: 'Medium',
     title: 'Who handles what in the cloud? (onboarding doc)',
     client: 'Aurora Pay',
     from: { name: 'Jordan Blake', role: 'Head of Platform Engineering' },
@@ -158,6 +160,7 @@ export const WEEK4: Lab[] = [
   {
     id: 'tabletop-lessons',
     week: 4,
+    level: 'Hard',
     title: 'Turn the ransomware tabletop into actions',
     client: 'Pinecrest Logistics',
     from: { name: 'Grace Adeyemi', role: 'Chief Operating Officer' },
@@ -246,6 +249,7 @@ export const WEEK4: Lab[] = [
   {
     id: 'management-response',
     week: 4,
+    level: 'Hard',
     title: 'Management response to the SOC 2 finding',
     client: 'Maple Ridge Credit Union',
     from: { name: 'Priya Natarajan', role: 'Compliance & Audit Lead' },
@@ -329,6 +333,7 @@ export const WEEK4: Lab[] = [
   {
     id: 'media-disposal',
     week: 4,
+    level: 'Easy',
     title: 'Disposing of old records and drives',
     client: 'Town of Riverside',
     from: { name: 'Diane Wong', role: 'Town Clerk (privacy lead)' },

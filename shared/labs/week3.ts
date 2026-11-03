@@ -4,6 +4,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'bia-targets',
     week: 3,
+    level: 'Hard',
     title: 'Recovery targets for the warehouse system',
     client: 'Pinecrest Logistics',
     from: { name: 'Grace Adeyemi', role: 'Chief Operating Officer' },
@@ -97,6 +98,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'leaver-control-test',
     week: 3,
+    level: 'Hard',
     title: 'Test the leaver control for the SOC 2 sample',
     client: 'Maple Ridge Credit Union',
     from: { name: 'Priya Natarajan', role: 'Compliance & Audit Lead' },
@@ -187,7 +189,7 @@ export const WEEK3: Lab[] = [
     ],
     debrief: {
       work: [
-        'Control testing is careful, slightly tedious work, and it is where junior analysts earn trust. Count business days properly, record every exception and never adjust the sample.',
+        'Control testing is careful, slightly tedious work, and it is where analysts earn the trust of auditors and control owners. Count business days properly, record every exception and never adjust the sample.',
         'Condition, criteria, cause, effect is the structure most audit teams use for findings. Learn it and your write-ups will be taken seriously.',
       ],
       examTip: 'Domain 6 distinguishes control design (would it work?) from operating effectiveness (did it work over time?). This test checks operating effectiveness, the same thing a SOC 2 Type II report covers.',
@@ -197,6 +199,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'soa-applicability',
     week: 3,
+    level: 'Hard',
     title: 'Help with our ISO 27001 Statement of Applicability',
     client: 'Aurora Pay',
     from: { name: 'Fatima Noor', role: 'Chief Compliance Officer' },
@@ -268,6 +271,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'contract-clauses',
     week: 3,
+    level: 'Medium',
     title: 'Security input on the VerifyMe contract renewal',
     client: 'Aurora Pay',
     from: { name: 'Sara Kim', role: 'VP Partnerships' },
@@ -345,6 +349,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'sod-review',
     week: 3,
+    level: 'Medium',
     title: 'Auditor flagged our accounting system roles',
     client: 'Northline Outfitters',
     from: { name: 'Hannah Lee', role: 'Finance Manager' },
@@ -419,6 +424,7 @@ export const WEEK3: Lab[] = [
   {
     id: 'vuln-priorities',
     week: 3,
+    level: 'Medium',
     title: 'We can fix three of these this week. Which ones?',
     client: 'Town of Riverside',
     from: { name: 'Marcus Bell', role: 'IT Manager' },

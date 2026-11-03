@@ -4,6 +4,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'tablet-ale',
     week: 2,
+    level: 'Medium',
     title: 'Is the $18,000 tablet mount worth it?',
     client: 'Pinecrest Logistics',
     from: { name: 'Grace Adeyemi', role: 'Chief Operating Officer' },
@@ -69,6 +70,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'incident-triage',
     week: 2,
+    level: 'Medium',
     title: 'ALERT: impossible travel on an admin account',
     client: 'Aurora Pay',
     from: { name: 'SOC (managed service)', role: 'Security monitoring' },
@@ -162,6 +164,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'change-review',
     week: 2,
+    level: 'Medium',
     title: 'CAB this afternoon: new reviews widget on checkout',
     client: 'Northline Outfitters',
     from: { name: 'Ben Kowalski', role: 'Operations Director' },
@@ -245,6 +248,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'risk-acceptance',
     week: 2,
+    level: 'Medium',
     title: 'Draft the risk acceptance for PermitPro',
     client: 'Town of Riverside',
     from: { name: 'Omar Siddiqui', role: 'Chief Administrative Officer' },
@@ -340,6 +344,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'privacy-misdirected',
     week: 2,
+    level: 'Easy',
     title: 'I sent lab results to the wrong patient',
     client: 'Harbourview Family Clinic',
     from: { name: 'Julie Tran', role: 'Front Desk Lead' },
@@ -419,6 +424,7 @@ export const WEEK2: Lab[] = [
   {
     id: 'firewall-review',
     week: 2,
+    level: 'Medium',
     title: 'Firewall rule review before the insurance renewal',
     client: 'Town of Riverside',
     from: { name: 'Marcus Bell', role: 'IT Manager' },

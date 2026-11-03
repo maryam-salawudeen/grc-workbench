@@ -127,9 +127,9 @@ export const GUIDES: Record<string, Guide> = {
     steps: ['Add anyone who should own something. Accountability needs a name, not a department.'],
   },
   '/inbox': {
-    what: 'Your work inbox. As a junior GRC analyst at a consultancy, you get requests from client staff: emails, tickets and Teams messages, each with the files you need.',
+    what: 'Your work inbox. As a GRC analyst at a consultancy, you get requests from client staff: emails, tickets and Teams messages, each with the files you need.',
     steps: [
-      'Start at the top of Week 1. The requests get harder week by week, like a real first month.',
+      'Requests are grouped by difficulty: Easy, Medium and Hard. Start with Easy, or use the difficulty filter to jump to your level.',
       'Open a request, read the message and the attachments, then work through the steps on the right.',
       'Submit each step to get feedback straight away. Retry any step if you want to improve your score.',
       'When every step is done, read the debrief: what the work looks like on the job, plus a CISSP exam tip.',
@@ -148,7 +148,7 @@ export const GUIDES: Record<string, Guide> = {
   '/practice': {
     what: 'Case studies are client engagements: you assess a whole organisation from a brief and build its risk register, then compare with a model answer.',
     steps: [
-      'Start with the Foundation scenario (the clinic).',
+      'Start with an Easy case study, such as the clinic.',
       'Click "Start scenario": you get a separate, empty workspace. The demo data is not affected.',
       'Read the brief, build the risk register, then click "Check my work".',
       'Reset and try again as often as you like.',

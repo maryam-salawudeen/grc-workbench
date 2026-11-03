@@ -672,3 +672,8 @@ body:has(.modal) .brief-fab { display: inline-flex; }
 .theme-pop.down { bottom: auto; top: calc(100% + 8px); left: auto; right: 0; }
 .theme-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--nav-line); background: transparent; color: var(--nav-strong); cursor: pointer; }
 .theme-icon-button svg { width: 18px; height: 18px; }
+
+/* Difficulty badges */
+.badge.level-easy { background: var(--low-soft); color: var(--low); }
+.badge.level-medium { background: var(--medium-soft); color: var(--medium); }
+.badge.level-hard { background: var(--critical-soft); color: var(--critical); }

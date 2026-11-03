@@ -4,6 +4,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'access-review',
     week: 1,
+    level: 'Easy',
     title: 'Q3 privileged access review for core banking',
     client: 'Maple Ridge Credit Union',
     from: { name: 'Daniel Chen', role: 'IT Operations Manager' },
@@ -92,7 +93,7 @@ export const WEEK1: Lab[] = [
     ],
     debrief: {
       work: [
-        'Access reviews are one of the most common jobs for a junior GRC analyst. You rarely make the access decisions yourself. You prepare the list, spot the obvious problems, chase sign-offs and make sure removals actually happen.',
+        'Access reviews are one of the most common jobs in GRC. You rarely make the access decisions yourself. You prepare the list, spot the obvious problems, chase sign-offs and make sure removals actually happen.',
         'Leavers who can still log in, movers who keep old access and accounts nobody owns turn up in almost every review. Learn to spot them quickly.',
       ],
       examTip: 'Privilege creep happens when users change roles and keep their old access. The fixes the exam expects are reviewing access when someone moves job and recertifying access on a schedule. The data owner decides who may have access; the custodian (IT) implements it.',
@@ -102,6 +103,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'phishing-results',
     week: 1,
+    level: 'Easy',
     title: 'First phishing test results. How bad is this?',
     client: 'Harbourview Family Clinic',
     from: { name: 'Nadia Rahman', role: 'Practice Manager' },
@@ -187,6 +189,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'mfa-exception',
     week: 1,
+    level: 'Easy',
     title: 'Can we turn off MFA on the social media accounts?',
     client: 'Northline Outfitters',
     from: { name: 'Aisha Grant', role: 'Marketing Manager' },
@@ -272,6 +275,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'data-classification',
     week: 1,
+    level: 'Easy',
     title: 'Examples for our new data classification standard',
     client: 'Town of Riverside',
     from: { name: 'Diane Wong', role: 'Town Clerk (privacy lead)' },
@@ -356,6 +360,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'vendor-questionnaire',
     week: 1,
+    level: 'Medium',
     title: 'ClinicCloud sent back our security questionnaire',
     client: 'Harbourview Family Clinic',
     from: { name: 'Nadia Rahman', role: 'Practice Manager' },
@@ -444,6 +449,7 @@ export const WEEK1: Lab[] = [
   {
     id: 'audit-evidence',
     week: 1,
+    level: 'Medium',
     title: 'ISO auditor evidence request: backups and access rights',
     client: 'Maple Ridge Credit Union',
     from: { name: 'Priya Natarajan', role: 'Compliance & Audit Lead' },

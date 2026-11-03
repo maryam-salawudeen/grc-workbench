@@ -233,6 +233,7 @@ export function LabPlayer() {
         title={lab.title}
         description={
           <span className="actions">
+            <span className={`badge level-${lab.level.toLowerCase()}`}>{lab.level}</span>
             <span className="badge accent">CISSP Domain {lab.domain}: {CISSP_DOMAINS[lab.domain]}</span>
             {lab.skills.map((s) => <span key={s} className="badge">{s}</span>)}
             <span className="small">About {lab.minutes} minutes</span>

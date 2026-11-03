@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CISSP_DOMAINS, LABS, WEEK_THEMES } from '../../../shared/labs/index.ts';
+import { CISSP_DOMAINS, LABS, LEVELS, LEVEL_THEMES } from '../../../shared/labs/index.ts';
 import { useAllLabProgress } from '../labProgress';
 import { Explained } from '../components/Explain';
 import { PageHeader, complianceColor } from '../components/ui';
@@ -12,17 +12,19 @@ export function Inbox() {
   const navigate = useNavigate();
   const [domain, setDomain] = useState('');
   const [status, setStatus] = useState('');
+  const [level, setLevel] = useState('');
 
   const visible = useMemo(
     () =>
       LABS.filter((l) => {
         const p = progress[l.id];
         if (domain && String(l.domain) !== domain) return false;
+        if (level && l.level !== level) return false;
         if (status === 'todo' && p.done) return false;
         if (status === 'done' && !p.done) return false;
         return true;
       }),
-    [progress, domain, status],
+    [progress, domain, status, level],
   );
 
   const done = LABS.filter((l) => progress[l.id].done);
@@ -33,7 +35,7 @@ export function Inbox() {
     <div className="page">
       <PageHeader
         title="Work inbox"
-        description="Requests from your clients, in the order you would get them in your first month."
+        description="Requests from your clients, from quick everyday questions to work for the board. Pick a difficulty or start at the top."
         actions={next && <Link className="btn primary" to={`/inbox/${next.id}`}>Open next request</Link>}
       />
 
@@ -51,6 +53,10 @@ export function Inbox() {
               <option value="">All CISSP domains</option>
               {CISSP_DOMAINS.slice(1).map((d, i) => <option key={d} value={i + 1}>Domain {i + 1}: {d}</option>)}
             </select>
+            <select value={level} onChange={(e) => setLevel(e.target.value)} aria-label="Difficulty">
+              <option value="">All difficulties</option>
+              {LEVELS.map((lv) => <option key={lv} value={lv}>{lv}</option>)}
+            </select>
             <select value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
               <option value="">All requests</option>
               <option value="todo">Still to do</option>
@@ -59,12 +65,12 @@ export function Inbox() {
           </div>
           <span className="small muted">{visible.length} requests</span>
         </div>
-        {[1, 2, 3, 4].map((week) => {
-          const labs = visible.filter((l) => l.week === week);
+        {LEVELS.map((lv) => {
+          const labs = visible.filter((l) => l.level === lv);
           if (!labs.length) return null;
           return (
-            <section key={week}>
-              <h3 className="inbox-week">{WEEK_THEMES[week]}</h3>
+            <section key={lv}>
+              <h3 className="inbox-week">{LEVEL_THEMES[lv]}</h3>
               <ul className="inbox-list">
                 {labs.map((l) => {
                   const p = progress[l.id];
@@ -81,6 +87,7 @@ export function Inbox() {
                         <div className="chips" style={{ marginTop: 6 }}>
                           <span className="badge">{l.channel}</span>
                           {l.priority !== 'Normal' && <span className={`badge ${PRIORITY_TONE[l.priority]}`}>{l.priority}</span>}
+                          <span className={`badge level-${l.level.toLowerCase()}`}>{l.level}</span>
                           <span className="badge accent">CISSP D{l.domain}</span>
                           <span className="badge">~{l.minutes} min</span>
                         </div>

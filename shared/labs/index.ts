@@ -2,19 +2,23 @@ import { WEEK1 } from './week1.ts';
 import { WEEK2 } from './week2.ts';
 import { WEEK3 } from './week3.ts';
 import { WEEK4 } from './week4.ts';
-import type { Lab } from './types.ts';
+import { MORE1 } from './more1.ts';
+import { MORE2 } from './more2.ts';
+import type { Lab, Level } from './types.ts';
 
 export * from './types.ts';
 export { scoreStep, shuffledOrder } from './scoring.ts';
 
-export const LABS: Lab[] = [...WEEK1, ...WEEK2, ...WEEK3, ...WEEK4];
+export const LEVELS: Level[] = ['Easy', 'Medium', 'Hard'];
+
+/** Easiest first, keeping the written order within each level. */
+export const LABS: Lab[] = [...WEEK1, ...WEEK2, ...WEEK3, ...WEEK4, ...MORE1, ...MORE2].sort((a, b) => LEVELS.indexOf(a.level) - LEVELS.indexOf(b.level));
 export const labById = (id: string) => LABS.find((l) => l.id === id);
 
-export const WEEK_THEMES: Record<number, string> = {
-  1: 'Week 1: finding your feet',
-  2: 'Week 2: everyday requests',
-  3: 'Week 3: testing and analysis',
-  4: 'Week 4: reporting and advising',
+export const LEVEL_THEMES: Record<Level, string> = {
+  Easy: 'Easy: clear facts and one decision',
+  Medium: 'Medium: weigh the evidence and make a call',
+  Hard: 'Hard: judgement, numbers and writing for leaders',
 };
 
 /** The consultancy the learner works for. Fictional. */
