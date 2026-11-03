@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useApi, type Row } from '../api';
+import { FRAMEWORK_EXPLAINED } from '../../../shared/explain/frameworks.ts';
 import { CoverageBar, Loading, PageHeader, Ring, complianceColor } from '../components/ui';
 
 export function Frameworks() {
@@ -10,6 +11,7 @@ export function Frameworks() {
       <PageHeader
         title="Frameworks"
         description="Compliance is calculated from the controls mapped to each requirement: implemented counts 1, partial 0.5, planned or not implemented 0. A requirement with no mapped control is a gap."
+        actions={<Link className="btn" to="/learn#frameworks">Compare the three frameworks</Link>}
       />
       <div className="grid cols-3">
         {data.map((f) => (
@@ -21,7 +23,8 @@ export function Frameworks() {
                 <div className="small muted">Version {f.version} · {f.total} requirements</div>
               </div>
             </div>
-            <p className="small muted" style={{ margin: '14px 0' }}>{f.description}</p>
+            <p className="small" style={{ margin: '14px 0 6px' }}>{FRAMEWORK_EXPLAINED[f.code]?.what ?? f.description}</p>
+            <p className="small muted" style={{ marginBottom: 12 }}>{FRAMEWORK_EXPLAINED[f.code]?.certifiable}</p>
             <CoverageBar counts={f.counts} total={f.total} />
             <div className="legend">
               <span><i style={{ background: 'var(--low)' }} />{f.counts.met} met</span>

@@ -7,6 +7,7 @@ import { PracticeBrief } from './pages/PracticeBrief';
 import { PracticeReview } from './pages/PracticeReview';
 import { Glossary } from './pages/Glossary';
 import { Inbox } from './pages/Inbox';
+import { HowItFits } from './pages/HowItFits';
 import { LabPlayer } from './pages/LabPlayer';
 import { WebsiteCheck } from './pages/WebsiteCheck';
 import { ExplainToggle } from './components/Explain';
@@ -38,7 +39,7 @@ const NAV: { group: string; items: [to: string, label: string, icon: string][] }
     ],
   },
   { group: 'Governance', items: [['/policies', 'Policies', 'policy'], ['/vendors', 'Vendors', 'vendor'], ['/people', 'People', 'people']] },
-  { group: 'Learn', items: [['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
+  { group: 'Learn', items: [['/learn', 'How GRC fits together', 'framework'], ['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
 ];
 
 export function App() {
@@ -122,6 +123,7 @@ export function App() {
           <Route path="/lab" element={<RiskLab />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/glossary" element={<Glossary />} />
+          <Route path="/learn" element={<HowItFits />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:id" element={<LabPlayer />} />
           <Route path="/website-check" element={<WebsiteCheck />} />

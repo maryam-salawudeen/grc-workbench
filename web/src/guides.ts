@@ -185,6 +185,14 @@ export const GUIDES: Record<string, Guide> = {
       'Answer the practice questions; each one explains the right answer.',
     ],
   },
+  '/learn': {
+    what: 'A tour of how the pieces of GRC connect: assets, risks, controls, frameworks, assessments and findings.',
+    steps: [
+      'Read the cycle at the top, then each step in order.',
+      'Use the "In this app" box at the end of each step to open the matching page and see it in practice.',
+      'Check the CISSP table at the bottom to find labs for the domain you are studying.',
+    ],
+  },
   '/glossary': {
     what: 'Every term used in the app, explained for someone new to GRC.',
     steps: ['Search for a word, or browse by group.', 'Tip: with Explain mode on, underlined words anywhere in the app open these explanations.'],

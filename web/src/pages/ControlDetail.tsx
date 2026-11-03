@@ -6,6 +6,8 @@ import { EntityForm } from '../components/EntityForm';
 import { Picker } from '../components/Picker';
 import { Loading, PageHeader, Score, StatusBadge, toast } from '../components/ui';
 import { CONTROL_FIELDS } from './registers';
+import { Explained } from '../components/Explain';
+import { CONTROL_EXPLAINED } from '../../../shared/explain/controls.ts';
 
 export function ControlDetail() {
   const { id } = useParams();
@@ -65,6 +67,15 @@ export function ControlDetail() {
           />
         </div>
         <div className="grid">
+          {CONTROL_EXPLAINED[c.title] && (
+            <div className="card card-pad about-control">
+              <h3 style={{ marginBottom: 8 }}>About this control</h3>
+              <p><b>What it is.</b> <Explained text={CONTROL_EXPLAINED[c.title].what} /></p>
+              <p><b>How it reduces risk.</b> <Explained text={CONTROL_EXPLAINED[c.title].how} /></p>
+              <p><b>Evidence that it works.</b> <Explained text={CONTROL_EXPLAINED[c.title].evidence} /></p>
+              <p className="small muted">This control is <Explained text={`${c.type} (what it does) and ${c.nature} (what kind of control it is)`} />.</p>
+            </div>
+          )}
           <div className="card">
             <div className="card-head">
               <h2>Framework mappings</h2>

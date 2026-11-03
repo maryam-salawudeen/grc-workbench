@@ -4,6 +4,9 @@ import { downloadCsv, useApi, type Row } from '../api';
 import { DataTable, matches } from '../components/DataTable';
 import { Icon } from '../components/icons';
 import { CoverageBar, Loading, PageHeader, Ring, StatusBadge, complianceColor } from '../components/ui';
+import { Explained } from '../components/Explain';
+import { FRAMEWORK_EXPLAINED } from '../../../shared/explain/frameworks.ts';
+import { REQUIREMENT_EXPLAINED } from '../../../shared/explain/requirements.ts';
 
 const STATUS_ORDER = ['gap', 'not_met', 'partial', 'met', 'not_applicable'];
 
@@ -13,6 +16,7 @@ export function FrameworkDetail() {
   const [q, setQ] = useState('');
   const [status, setStatus] = useState('');
   const [domain, setDomain] = useState('');
+  const [showEvidence, setShowEvidence] = useState(false);
 
   const rows = useMemo(
     () => (data?.requirements ?? []).filter((r: Row) => (!status || r.status === status) && (!domain || r.domain === domain) && matches(r, q, ['ref', 'title'])),
@@ -45,13 +49,15 @@ export function FrameworkDetail() {
         }
       />
 
+      {FRAMEWORK_EXPLAINED[data.code] && <AboutFramework code={data.code} />}
+
       <div className="split" style={{ marginBottom: 16 }}>
         <div className="card">
           <div className="card-head"><h2>Coverage by domain</h2></div>
           <div className="card-body">
             {data.domains.map((d: Row) => (
               <div key={d.domain} className="bar-row" style={{ cursor: 'pointer' }} onClick={() => setDomain(domain === d.domain ? '' : d.domain)}>
-                <span className="name" style={{ fontWeight: domain === d.domain ? 600 : 400 }}>{d.domain}</span>
+                <span className="name" style={{ fontWeight: domain === d.domain ? 600 : 400 }} title={FRAMEWORK_EXPLAINED[data.code]?.domains[d.domain]}>{d.domain}</span>
                 <CoverageBar counts={d.counts} total={d.total} />
                 <span className="pct">{Math.round(d.score)}%</span>
               </div>
@@ -82,6 +88,9 @@ export function FrameworkDetail() {
               <option value="">All domains</option>
               {data.domains.map((d: Row) => <option key={d.domain}>{d.domain}</option>)}
             </select>
+            <label className="small" style={{ display: 'flex', gap: 6, alignItems: 'center', cursor: 'pointer' }}>
+              <input type="checkbox" checked={showEvidence} onChange={(e) => setShowEvidence(e.target.checked)} /> Show the evidence an auditor looks for
+            </label>
           </div>
           <span className="small muted">{rows.length} requirements</span>
         </div>
@@ -89,7 +98,22 @@ export function FrameworkDetail() {
           rows={rows}
           columns={[
             { key: 'ref', label: 'Ref', render: (r) => <span className="mono nowrap">{r.ref}</span> },
-            { key: 'title', label: 'Requirement', render: (r) => <div><div className="title">{r.title}</div><div className="small muted">{r.domain}</div></div> },
+            {
+              key: 'title',
+              label: 'Requirement',
+              render: (r) => {
+                const [meaning, evidence] = REQUIREMENT_EXPLAINED[r.ref] ?? [];
+                return (
+                  <div>
+                    <div className="title">{r.title}</div>
+                    {meaning && <div className="small">{meaning}</div>}
+                    {showEvidence && evidence && <div className="small muted" style={{ marginTop: 3 }}><b>Evidence:</b> {evidence}</div>}
+                    <div className="small faint">{r.domain}</div>
+                  </div>
+                );
+              },
+              csv: (r) => r.title,
+            },
             { key: 'status', label: 'Coverage', render: (r) => <StatusBadge value={r.status} />, sortValue: (r) => STATUS_ORDER.indexOf(r.status) },
             {
               key: 'controls',
@@ -114,5 +138,35 @@ export function FrameworkDetail() {
         />
       </div>
     </div>
+  );
+}
+
+function AboutFramework({ code }: { code: string }) {
+  const f = FRAMEWORK_EXPLAINED[code];
+  return (
+    <details className="card about-card" style={{ marginBottom: 16 }}>
+      <summary><span>About this framework</span><span className="small muted">what it is, who asks for it and how it is organised</span></summary>
+      <div className="card-body grid" style={{ gap: 12 }}>
+        <dl className="dl">
+          <dt>What it is</dt><dd><Explained text={f.what} /></dd>
+          <dt>Certification</dt><dd><Explained text={f.certifiable} /></dd>
+          <dt>Who asks for it</dt><dd><Explained text={f.whoAsks} /></dd>
+          <dt>Published by</dt><dd>{f.publisher}</dd>
+          <dt>How it is organised</dt><dd><Explained text={f.structure} /></dd>
+          <dt>Reading references</dt><dd>{f.readingRefs}</dd>
+        </dl>
+        <div>
+          <h3 style={{ marginBottom: 8 }}>The parts of the framework</h3>
+          <dl className="dl">
+            {Object.entries(f.domains).map(([name, text]) => (
+              <div key={name} style={{ display: 'contents' }}>
+                <dt><b>{name}</b></dt>
+                <dd><Explained text={text} /></dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </details>
   );
 }

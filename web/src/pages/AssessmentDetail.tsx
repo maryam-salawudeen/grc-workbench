@@ -6,6 +6,7 @@ import { DataTable, matches } from '../components/DataTable';
 import { EntityForm } from '../components/EntityForm';
 import { LevelBadge, Loading, Modal, PageHeader, StatusBadge, toast } from '../components/ui';
 import { FINDING_FIELDS } from './registers';
+import { REQUIREMENT_EXPLAINED } from '../../../shared/explain/requirements.ts';
 
 const RESULTS: [string, string][] = [
   ['not_assessed', 'Not assessed'],
@@ -107,6 +108,25 @@ export function AssessmentDetail() {
         ))}
       </div>
       {a.scope && <p className="muted" style={{ marginBottom: 16 }}><b>Scope:</b> {a.scope}</p>}
+      <details className="card about-card" style={{ marginBottom: 16 }}>
+        <summary><span>How an assessment works</span><span className="small muted">the steps, and what each result means</span></summary>
+        <div className="card-body grid" style={{ gap: 10 }}>
+          <ol className="gr-steps">
+            <li><b>Plan.</b> Agree the scope (which systems, sites and period) and the framework.</li>
+            <li><b>Collect evidence.</b> Ask control owners for records: logs, tickets, settings, signed reviews. Each requirement below says what to look for.</li>
+            <li><b>Test.</b> Check the evidence actually shows the requirement is met, usually on a sample.</li>
+            <li><b>Record a result</b> for each requirement, with notes on what you saw.</li>
+            <li><b>Raise findings</b> for anything partial or non-compliant, with an owner and a due date.</li>
+            <li><b>Report</b> the results and track the findings until they are fixed.</li>
+          </ol>
+          <dl className="dl">
+            <dt>Compliant</dt><dd>The evidence shows the requirement is fully met.</dd>
+            <dt>Partially compliant</dt><dd>Some of it is in place, for example for some systems only, or the evidence has gaps.</dd>
+            <dt>Non-compliant</dt><dd>The requirement is not met, or there is no evidence that it is.</dd>
+            <dt>Not applicable</dt><dd>It does not apply to this scope. Write down why: auditors will ask.</dd>
+          </dl>
+        </div>
+      </details>
 
       <div className="split">
         <div className="card">
@@ -130,6 +150,7 @@ export function AssessmentDetail() {
                 render: (r) => (
                   <div>
                     <div className="title">{r.title}</div>
+                    {REQUIREMENT_EXPLAINED[r.ref] && <div className="small">{REQUIREMENT_EXPLAINED[r.ref][0]}</div>}
                     <div className="small muted">
                       Controls: <StatusBadge value={r.coverage} />
                       {r.notes && <> · {r.notes.length > 80 ? `${r.notes.slice(0, 80)}…` : r.notes}</>}
@@ -217,8 +238,15 @@ export function AssessmentDetail() {
               { name: 'evidence', label: 'Evidence reviewed', type: 'textarea', placeholder: 'Document names, links, sample IDs, interview dates…' },
             ]}
             initial={noteFor}
-            aside={() =>
-              noteFor.controls.length ? (
+            aside={() => (
+              <div className="grid" style={{ gap: 8 }}>
+              {REQUIREMENT_EXPLAINED[noteFor.ref] && (
+                <div className="callout small">
+                  <p><b>What this means.</b> {REQUIREMENT_EXPLAINED[noteFor.ref][0]}</p>
+                  <p style={{ marginTop: 4 }}><b>Evidence to look for.</b> {REQUIREMENT_EXPLAINED[noteFor.ref][1]}</p>
+                </div>
+              )}
+              {noteFor.controls.length ? (
                 <div className="small muted">
                   Mapped controls:{' '}
                   {noteFor.controls.map((c: Row) => (
@@ -227,8 +255,9 @@ export function AssessmentDetail() {
                 </div>
               ) : (
                 <div className="small muted">No control is mapped to this requirement.</div>
-              )
-            }
+              )}
+              </div>
+            )}
             onCancel={() => setNoteFor(null)}
             onSubmit={async (payload) => {
               await saveItem(noteFor, payload);
