@@ -95,6 +95,8 @@ The public site is a static build where the whole API runs **inside the visitor'
 - each workspace (demo and practice scenarios) is saved in the browser's IndexedDB, so every visitor gets a private copy and nobody can change anyone else's work;
 - the website check is the one server step: [`api/site-check.ts`](api/site-check.ts) is a stateless Vercel function that stores nothing and refuses private and internal addresses.
 
+Every push to `main` deploys to production automatically through Vercel's GitHub integration, and pull requests get preview links. To build or deploy by hand:
+
 ```bash
 npm run build:hosted -w web   # what Vercel builds (VITE_LOCAL_BACKEND=1)
 vercel deploy --prod
