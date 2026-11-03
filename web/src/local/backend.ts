@@ -9,6 +9,7 @@ import { createWorkspaces, workspaceRoutes, type Workspaces } from '../../../ser
 import { SiteCheckError, type SiteReport } from '../../../server/src/sitecheck-core.ts';
 import { SqlJsDb } from './sqljs';
 import { loadAll, removeBytes, saveBytes } from './storage';
+import { getStatus, markChanged, pull, startSync } from './sync';
 
 const ACTIVE_KEY = 'grc-active-workspace';
 
@@ -28,6 +29,9 @@ async function remoteSiteCheck(url: string): Promise<SiteReport> {
 
 export async function initLocalBackend() {
   const SQL = await initSqlJs({ locateFile: () => wasmUrl });
+  // With sync on, fetch newer work from the user's other device before loading anything.
+  // Give up after a few seconds so the app still opens offline.
+  if (getStatus().code) await Promise.race([pull(), new Promise((r) => setTimeout(r, 4000))]);
   try {
     saved = await loadAll();
   } catch {
@@ -66,10 +70,12 @@ export async function initLocalBackend() {
   // Create (and seed) the active workspace now, so the first page loads quickly.
   workspaces.db();
   await persist();
+  startSync(() => location.reload());
 }
 
 async function persist() {
   if (!persistent) return;
+  let changed = removals.size > 0;
   try {
     for (const id of removals) await removeBytes(id);
     removals.clear();
@@ -79,10 +85,12 @@ async function persist() {
       const bytes = sdb.export();
       saved.set(id, bytes);
       await saveBytes(id, bytes);
+      changed = true;
     }
   } catch {
     persistent = false;
   }
+  if (changed) markChanged();
 }
 
 /** Handle an /api request in the browser, then save whatever changed. */

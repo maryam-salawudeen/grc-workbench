@@ -8,6 +8,8 @@ import { PracticeReview } from './pages/PracticeReview';
 import { Glossary } from './pages/Glossary';
 import { Inbox } from './pages/Inbox';
 import { HowItFits } from './pages/HowItFits';
+import { Sync } from './pages/Sync';
+import { syncedAgo, useSyncStatus } from './useSync';
 import { LabPlayer } from './pages/LabPlayer';
 import { WebsiteCheck } from './pages/WebsiteCheck';
 import { ExplainToggle } from './components/Explain';
@@ -26,7 +28,7 @@ import { RiskLab } from './pages/RiskLab';
 import { Assessments, Assets, Controls, Findings, People, Policies, Vendors } from './pages/registers';
 
 const NAV: { group: string; items: [to: string, label: string, icon: string][] }[] = [
-  { group: 'My work', items: [['/inbox', 'Work inbox', 'inbox'], ['/practice', 'Case studies', 'case'], ['/', 'Dashboard', 'dashboard']] },
+  { group: 'My work', items: [['/inbox', 'Work inbox', 'inbox'], ['/practice', 'Case studies', 'case'], ['/', 'Dashboard', 'dashboard'], ['/sync', 'Sync devices', 'activity']] },
   { group: 'Risk', items: [['/risks', 'Risk register', 'risk'], ['/assets', 'Assets', 'asset']] },
   {
     group: 'Compliance',
@@ -82,7 +84,7 @@ export function App() {
         <div className="org">
           <div style={{ color: '#fff', fontWeight: 500 }}>{workspace.org_name}</div>
           <div>{workspace.scenario ? 'Practice scenario' : 'Demo organisation'} · <Link to="/practice" style={{ color: '#7fd6cd' }}>Switch</Link></div>
-          {LOCAL_BACKEND && <div style={{ marginTop: 8, color: '#8a98a6' }}>Your work is private and saved in this browser on this device.</div>}
+          {LOCAL_BACKEND && <SyncLine />}
         </div>
       </aside>
       <div className="main">
@@ -124,6 +126,7 @@ export function App() {
           <Route path="/practice" element={<Practice />} />
           <Route path="/glossary" element={<Glossary />} />
           <Route path="/learn" element={<HowItFits />} />
+          <Route path="/sync" element={<Sync />} />
           <Route path="/inbox" element={<Inbox />} />
           <Route path="/inbox/:id" element={<LabPlayer />} />
           <Route path="/website-check" element={<WebsiteCheck />} />
@@ -134,6 +137,16 @@ export function App() {
       </div>
       <BriefPanel />
       <Toaster />
+    </div>
+  );
+}
+
+function SyncLine() {
+  const s = useSyncStatus();
+  const text = !s.code ? 'Saved on this device only.' : s.state === 'syncing' ? 'Syncing…' : s.state === 'error' ? 'Sync problem.' : `Synced ${syncedAgo(s.syncedAt)}.`;
+  return (
+    <div style={{ marginTop: 8, color: '#8a98a6' }}>
+      {text} <Link to="/sync" style={{ color: '#7fd6cd' }}>{s.code ? 'Sync settings' : 'Sync with your phone'}</Link>
     </div>
   );
 }

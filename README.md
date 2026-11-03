@@ -102,7 +102,8 @@ The public site is a static build where the whole API runs **inside the visitor'
 - the same Hono API code (`server/src/app.ts`) is bundled into the web app;
 - SQLite runs as WebAssembly ([sql.js](https://sql.js.org)) behind the same small database interface as `node:sqlite`;
 - each workspace (demo and practice scenarios) is saved in the browser's IndexedDB, so every visitor gets a private copy and nobody can change anyone else's work;
-- the website check is the one server step: [`api/site-check.ts`](api/site-check.ts) is a stateless Vercel function that stores nothing and refuses private and internal addresses.
+- **sync without login**: a private 24-character sync code links a phone and a laptop. Each device bundles its workspaces and progress, gzips it and encrypts it with AES-GCM using a key derived from the code, then [`api/sync.ts`](api/sync.ts) stores the ciphertext in a private Vercel Blob store under a SHA-256 hash of the code. The server never sees the code or readable data; ETags stop two devices overwriting each other, and the newest copy wins;
+- the website check is the other server step: [`api/site-check.ts`](api/site-check.ts) is a stateless Vercel function that stores nothing and refuses private and internal addresses.
 
 Every push to `main` deploys to production automatically through Vercel's GitHub integration, and pull requests get preview links. To build or deploy by hand:
 

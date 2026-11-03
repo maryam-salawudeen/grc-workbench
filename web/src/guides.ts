@@ -193,6 +193,15 @@ export const GUIDES: Record<string, Guide> = {
       'Check the CISSP table at the bottom to find labs for the domain you are studying.',
     ],
   },
+  '/sync': {
+    what: 'Use the same work on your phone and laptop without an account.',
+    steps: [
+      'On the device that has your work, click "Turn on sync".',
+      'Scan the QR code with your phone camera, or open the link on your other computer, then tap Join.',
+      'From then on, each device picks up the other\'s changes when you open it.',
+    ],
+    tip: 'Keep the sync code private. It is the only key to your synced work.',
+  },
   '/glossary': {
     what: 'Every term used in the app, explained for someone new to GRC.',
     steps: ['Search for a word, or browse by group.', 'Tip: with Explain mode on, underlined words anywhere in the app open these explanations.'],
