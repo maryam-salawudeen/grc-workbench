@@ -1,31 +1,10 @@
-import { useEffect, useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { api, type Row } from '../api';
 import { useWorkspace } from '../workspace';
 import { Loading, PageHeader, toast } from '../components/ui';
 import { Difficulty } from './Practice';
 import { Explained } from '../components/Explain';
-
-function useChecklist(key: string, size: number) {
-  const storageKey = `grc-tasks-${key}`;
-  const [done, setDone] = useState<boolean[]>(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(storageKey) ?? 'null');
-      if (Array.isArray(saved) && saved.length === size) return saved;
-    } catch {
-      // Storage unavailable: keep the checklist in memory only.
-    }
-    return Array(size).fill(false);
-  });
-  useEffect(() => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(done));
-    } catch {
-      // ignore
-    }
-  }, [storageKey, done]);
-  return [done, (i: number) => setDone((d) => d.map((v, n) => (n === i ? !v : v)))] as const;
-}
+import { useBriefOpen, useChecklist } from '../persist';
 
 export function PracticeBrief() {
   const { scenario: s, loaded } = useWorkspace();
@@ -36,6 +15,8 @@ export function PracticeBrief() {
 
 function Brief({ s }: { s: Row }) {
   const [done, toggle] = useChecklist(s.id, s.tasks.length);
+  const [, setBriefOpen] = useBriefOpen();
+  const navigate = useNavigate();
 
   const reset = async () => {
     if (!confirm(`Reset ${s.org}? Everything you have entered for this scenario will be deleted.`)) return;
@@ -63,7 +44,15 @@ function Brief({ s }: { s: Row }) {
         actions={
           <>
             <button className="btn ghost danger" onClick={reset}>Reset scenario</button>
-            <Link className="btn" to="/risks">Open risk register</Link>
+            <button
+              className="btn"
+              onClick={() => {
+                setBriefOpen(true);
+                navigate('/risks');
+              }}
+            >
+              Open the register with this brief beside it
+            </button>
             <Link className="btn primary" to="/practice/review">Check my work</Link>
           </>
         }

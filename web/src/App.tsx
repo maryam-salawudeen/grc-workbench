@@ -8,6 +8,8 @@ import { PracticeReview } from './pages/PracticeReview';
 import { Glossary } from './pages/Glossary';
 import { WebsiteCheck } from './pages/WebsiteCheck';
 import { ExplainToggle } from './components/Explain';
+import { BriefPanel } from './components/BriefPanel';
+import { useBriefOpen } from './persist';
 import { Icon } from './components/icons';
 import { Toaster } from './components/ui';
 import { Dashboard } from './pages/Dashboard';
@@ -41,6 +43,7 @@ export function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const workspace = useWorkspace();
+  const [briefOpen, setBriefOpen] = useBriefOpen();
   useEffect(() => {
     setOpen(false);
     window.scrollTo(0, 0);
@@ -91,7 +94,9 @@ export function App() {
           <div className="practice-bar">
             <span><b>Practice:</b> {workspace.org_name}</span>
             <span className="actions">
-              <Link to="/practice/brief">Brief</Link>
+              <button className="btn sm" onClick={() => setBriefOpen(!briefOpen)} aria-pressed={briefOpen}>
+                {briefOpen ? 'Hide brief' : 'Show brief beside'}
+              </button>
               <Link to="/practice/review" className="btn sm primary">Check my work</Link>
             </span>
           </div>
@@ -121,6 +126,7 @@ export function App() {
           <Route path="*" element={<div className="page"><h1>Page not found</h1></div>} />
         </Routes>
       </div>
+      <BriefPanel />
       <Toaster />
     </div>
   );

@@ -140,7 +140,8 @@ export const GUIDES: Record<string, Guide> = {
     steps: [
       'Read the whole brief once. Then read it again, highlighting every weakness and every incident.',
       'Each weakness plus a threat is a risk. Recent incidents tell you likelihood is high.',
-      'Open the risk register and add one risk at a time, using the task list on the right.',
+      'Click "Open the register with this brief beside it". The brief stays docked on the right (or behind the round Brief button on a phone) while you type, with tabs for asset values, your tasks and notes.',
+      'Add one risk at a time in the risk register.',
       'Use the asset values in the brief for AV, EF and ARO.',
       'When you have 5 or more risks with controls and residual scores, click "Check my work".',
     ],

@@ -410,3 +410,40 @@ a.chip:hover { border-color: var(--accent); text-decoration: none; }
   table.stack tr.row-overdue { background: color-mix(in srgb, var(--critical-soft) 55%, transparent); }
   table.stack tr.row-overdue td { background: transparent; }
 }
+
+/* ---- Practice brief docked beside the page ---- */
+:root { --brief-w: min(420px, 36vw); }
+.brief-panel { background: var(--surface); border-left: 1px solid var(--border); display: flex; flex-direction: column; min-width: 0; }
+.brief-panel-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; padding: 14px 16px 10px; }
+.brief-panel-head h2 { font-size: 16px; }
+.brief-tabs { margin: 0 16px 10px; }
+.brief-tabs button { flex: 1; }
+.brief-panel-body { flex: 1; overflow-y: auto; padding: 4px 16px 24px; font-size: 13.5px; }
+.brief-para { position: relative; padding: 4px 0; }
+.brief-para p { margin: 0; }
+.brief-copy { position: absolute; top: 2px; right: -6px; opacity: 0; font: inherit; font-size: 11px; padding: 2px 6px; border-radius: 4px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; }
+.brief-para:hover .brief-copy, .brief-copy:focus-visible { opacity: 1; }
+.brief-table { width: 100%; font-size: 13px; }
+.brief-table th { background: transparent; padding: 6px 4px; }
+.brief-table td { padding: 7px 4px; }
+.brief-list { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
+.brief-notes { min-height: 50vh; font-size: 13.5px; line-height: 1.5; }
+.brief-fab {
+  position: fixed; left: 252px; bottom: 20px; z-index: 56;
+  display: inline-flex; align-items: center; gap: 6px; padding: 9px 14px; border-radius: 999px;
+  font: inherit; font-weight: 600; font-size: 13px; cursor: pointer;
+  background: var(--accent); color: #fff; border: 0; box-shadow: 0 6px 18px rgb(0 0 0 / 0.2);
+}
+.brief-fab svg { width: 16px; height: 16px; }
+@media (min-width: 901px) {
+  body.brief-open .shell { grid-template-columns: 232px minmax(0, 1fr) var(--brief-w); }
+  .brief-panel { position: sticky; top: 0; height: 100vh; z-index: 55; }
+  /* Pop-up forms and messages shift left so the brief stays readable while you type. */
+  body.brief-open .overlay { right: var(--brief-w); }
+  body.brief-open .explain-panel, body.brief-open .toast { right: calc(var(--brief-w) + 20px); }
+}
+@media (max-width: 900px) {
+  .brief-panel { position: fixed; inset: 0; z-index: 58; border-left: 0; }
+  .brief-fab { left: 16px; bottom: 16px; }
+  .brief-copy { opacity: 1; }
+}
