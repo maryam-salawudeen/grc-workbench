@@ -526,3 +526,60 @@ a.chip:hover { border-color: var(--accent); text-decoration: none; }
 .about-card summary { cursor: pointer; padding: 14px 18px; display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; font-weight: 600; color: var(--accent-text); }
 .about-card[open] summary { border-bottom: 1px solid var(--border); }
 .about-control p + p { margin-top: 6px; }
+
+/* ---- Calmer layout: sidebar, home, guides and underlines ---- */
+.sidebar { display: flex; flex-direction: column; padding: 16px 10px 12px; }
+.brand { padding: 4px 10px 16px; }
+.nav-body { flex: 1; overflow-y: auto; min-height: 0; }
+.nav-group { margin: 14px 0 0; }
+.nav-group > span { padding: 4px 10px 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-link { padding: 6px 10px; font-size: 13.5px; }
+.nav-more summary { list-style: none; cursor: pointer; color: #8a98a6; }
+.nav-more summary::-webkit-details-marker { display: none; }
+.nav-more[open] summary svg { transform: rotate(45deg); }
+.nav-more summary svg { transition: transform 0.15s; }
+.nav-more .nav-link:not(summary) { padding-left: 22px; }
+.nav-foot { border-top: 1px solid rgb(255 255 255 / 0.08); padding: 12px 10px 4px; display: grid; gap: 8px; color: var(--nav-text); font-size: 12.5px; }
+.nav-sync { display: inline-flex; gap: 6px; align-items: center; color: var(--nav-text); }
+.nav-sync:hover { color: #fff; text-decoration: none; }
+.org { display: none; }
+
+.home { max-width: 820px; }
+.home-head { margin: 12px 0 22px; }
+.home-head h1 { font-size: 28px; }
+.home-head p { margin-top: 6px; font-size: 15px; }
+.home-next { display: grid; gap: 8px; padding: 24px; color: var(--text); border-color: var(--border-strong); }
+.home-next:hover { text-decoration: none; border-color: var(--accent); }
+.home-next h2 { font-size: 20px; }
+.home-progress { display: flex; gap: 12px; align-items: center; margin-top: 6px; }
+.home-progress .bar { flex: 1; max-width: 280px; }
+.home-cta { justify-self: start; margin-top: 8px; }
+.home-more { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-top: 14px; }
+@media (max-width: 640px) { .home-more { grid-template-columns: minmax(0, 1fr); } }
+.home-tile { display: flex; gap: 14px; padding: 18px; color: var(--text); align-items: flex-start; }
+.home-tile:hover { text-decoration: none; border-color: var(--border-strong); }
+.home-tile svg { color: var(--accent-text); flex: none; margin-top: 2px; }
+.home-tile h3 { text-transform: none; letter-spacing: 0; font-size: 15px; color: var(--text); margin-bottom: 4px; }
+.home-foot { margin-top: 22px; }
+
+/* The guide is a quiet link until opened. */
+.page-guide { background: transparent; padding: 0; margin: -10px 0 18px; }
+.page-guide summary { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; font-weight: 500; color: var(--muted); list-style: none; }
+.page-guide summary::before { content: '?'; display: inline-grid; place-items: center; width: 16px; height: 16px; border-radius: 50%; border: 1px solid currentColor; font-size: 10.5px; font-weight: 700; }
+.page-guide summary::-webkit-details-marker { display: none; }
+.page-guide summary:hover { color: var(--accent-text); }
+.page-guide[open] { background: var(--accent-soft); padding: 12px 16px; border-radius: var(--radius); }
+.page-guide[open] summary { color: var(--accent-text); }
+
+/* Softer underlines: visible enough to find, quiet enough to read past. */
+.term { text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent); text-decoration-thickness: 1px; }
+
+.inbox-summary { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin: -6px 0 16px; }
+
+.nav-client { padding: 0 10px 6px; color: #fff; font-size: 12.5px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* The top bar has a Brief button; the floating one is only needed while a form covers the bar. */
+.brief-fab { display: none; }
+body:has(.modal) .brief-fab { display: inline-flex; }
+
+.filters > * { min-width: 0; max-width: 100%; }
+.filters select { max-width: 100%; text-overflow: ellipsis; }

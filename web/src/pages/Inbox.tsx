@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CISSP_DOMAINS, EMPLOYER, LABS, WEEK_THEMES } from '../../../shared/labs/index.ts';
+import { CISSP_DOMAINS, LABS, WEEK_THEMES } from '../../../shared/labs/index.ts';
 import { useAllLabProgress } from '../labProgress';
 import { Explained } from '../components/Explain';
 import { PageHeader, complianceColor } from '../components/ui';
@@ -33,31 +33,15 @@ export function Inbox() {
     <div className="page">
       <PageHeader
         title="Work inbox"
-        description={`You have just joined ${EMPLOYER.name} as a junior GRC analyst. Requests from your clients arrive here in the order you would get them during your first month. Open one, work from the attachments and send back the deliverable.`}
+        description="Requests from your clients, in the order you would get them in your first month."
         actions={next && <Link className="btn primary" to={`/inbox/${next.id}`}>Open next request</Link>}
       />
 
-      <div className="kpis">
-        <div className="card kpi">
-          <div className="label">Requests completed</div>
-          <div className="value">{done.length}<span className="muted" style={{ fontSize: 16 }}>/{LABS.length}</span></div>
-          <div className="bar" style={{ marginTop: 8 }}><span style={{ width: `${(done.length / LABS.length) * 100}%`, background: 'var(--accent)' }} /></div>
-        </div>
-        <div className="card kpi">
-          <div className="label">Average score</div>
-          <div className="value" style={{ color: average == null ? undefined : complianceColor(average) }}>{average == null ? '—' : `${average}%`}</div>
-          <div className="sub">across completed requests</div>
-        </div>
-        <div className="card kpi">
-          <div className="label">CISSP domains covered</div>
-          <div className="value">{new Set(done.map((l) => l.domain)).size}<span className="muted" style={{ fontSize: 16 }}>/8</span></div>
-          <div className="sub">by the requests you have finished</div>
-        </div>
-        <Link to="/practice" className="card kpi">
-          <div className="label">Client case studies</div>
-          <div className="value">5</div>
-          <div className="sub">Build a full risk register from a brief</div>
-        </Link>
+      <div className="inbox-summary">
+        <div className="bar" style={{ flex: 1, maxWidth: 260 }}><span style={{ width: `${(done.length / LABS.length) * 100}%`, background: 'var(--accent)' }} /></div>
+        <span className="small"><b>{done.length}</b> of {LABS.length} done</span>
+        {average != null && <span className="small muted">Average score <b style={{ color: complianceColor(average) }}>{average}%</b></span>}
+        <span className="small muted">{new Set(done.map((l) => l.domain)).size} of 8 CISSP domains covered</span>
       </div>
 
       <div className="card">

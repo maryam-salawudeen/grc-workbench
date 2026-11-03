@@ -18,6 +18,7 @@ import { useBriefOpen } from './persist';
 import { Icon } from './components/icons';
 import { Toaster } from './components/ui';
 import { Dashboard } from './pages/Dashboard';
+import { Home } from './pages/Home';
 import { Risks } from './pages/Risks';
 import { RiskDetail } from './pages/RiskDetail';
 import { ControlDetail } from './pages/ControlDetail';
@@ -27,28 +28,56 @@ import { AssessmentDetail } from './pages/AssessmentDetail';
 import { RiskLab } from './pages/RiskLab';
 import { Assessments, Assets, Controls, Findings, People, Policies, Vendors } from './pages/registers';
 
-const NAV: { group: string; items: [to: string, label: string, icon: string][] }[] = [
-  { group: 'My work', items: [['/inbox', 'Work inbox', 'inbox'], ['/practice', 'Case studies', 'case'], ['/', 'Dashboard', 'dashboard'], ['/sync', 'Sync devices', 'activity']] },
-  { group: 'Risk', items: [['/risks', 'Risk register', 'risk'], ['/assets', 'Assets', 'asset']] },
-  {
-    group: 'Compliance',
-    items: [
-      ['/controls', 'Controls', 'control'],
-      ['/frameworks', 'Frameworks', 'framework'],
-      ['/assessments', 'Assessments', 'assessment'],
-      ['/findings', 'Findings', 'finding'],
-      ['/website-check', 'Website check', 'globe'],
-    ],
-  },
-  { group: 'Governance', items: [['/policies', 'Policies', 'policy'], ['/vendors', 'Vendors', 'vendor'], ['/people', 'People', 'people']] },
-  { group: 'Learn', items: [['/learn', 'How GRC fits together', 'framework'], ['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
+type NavItem = [to: string, label: string, icon: string];
+
+const WORK: NavItem[] = [
+  ['/inbox', 'Work inbox', 'inbox'],
+  ['/practice', 'Case studies', 'case'],
 ];
+const WORKSPACE: NavItem[] = [
+  ['/dashboard', 'Overview', 'dashboard'],
+  ['/risks', 'Risk register', 'risk'],
+  ['/controls', 'Controls', 'control'],
+  ['/frameworks', 'Frameworks', 'framework'],
+  ['/assessments', 'Assessments', 'assessment'],
+  ['/findings', 'Findings', 'finding'],
+];
+const MORE: NavItem[] = [
+  ['/assets', 'Assets', 'asset'],
+  ['/policies', 'Policies', 'policy'],
+  ['/vendors', 'Vendors', 'vendor'],
+  ['/people', 'People', 'people'],
+  ['/website-check', 'Website check', 'globe'],
+];
+const LEARN: NavItem[] = [
+  ['/learn', 'Start here', 'book'],
+  ['/lab', 'Risk lab', 'learn'],
+  ['/glossary', 'Glossary', 'book'],
+];
+
+function NavItems({ items }: { items: NavItem[] }) {
+  return (
+    <>
+      {items.map(([to, label, icon]) => (
+        <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+          <Icon name={icon} />
+          {label}
+        </NavLink>
+      ))}
+    </>
+  );
+}
 
 export function App() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const workspace = useWorkspace();
   const [briefOpen, setBriefOpen] = useBriefOpen();
+  const inMore = MORE.some(([to]) => location.pathname.startsWith(to));
+  const [moreOpen, setMoreOpen] = useState(inMore);
+  useEffect(() => {
+    if (inMore) setMoreOpen(true);
+  }, [inMore]);
   useEffect(() => {
     setOpen(false);
     window.scrollTo(0, 0);
@@ -67,24 +96,35 @@ export function App() {
             <small>GRC work simulator</small>
           </div>
         </div>
-        <div style={{ padding: '0 10px 14px' }}>
-          <ExplainToggle />
-        </div>
-        {NAV.map((g) => (
-          <div className="nav-group" key={g.group}>
-            <span>{g.group}</span>
-            {g.items.map(([to, label, icon]) => (
-              <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
-                <Icon name={icon} />
-                {label}
-              </NavLink>
-            ))}
+        <nav className="nav-body">
+          <NavItems items={[['/', 'Home', 'dashboard']]} />
+          <div className="nav-group">
+            <span>Work</span>
+            <NavItems items={WORK} />
           </div>
-        ))}
-        <div className="org">
-          <div style={{ color: '#fff', fontWeight: 500 }}>{workspace.org_name}</div>
-          <div>{workspace.scenario ? 'Practice scenario' : 'Demo organisation'} · <Link to="/practice" style={{ color: '#7fd6cd' }}>Switch</Link></div>
+          <div className="nav-group">
+            <span>Client workspace</span>
+            <div className="nav-client" title={workspace.org_name}>{workspace.org_name}</div>
+            <NavItems items={WORKSPACE} />
+            <details className="nav-more" open={moreOpen} onToggle={(e) => setMoreOpen((e.target as HTMLDetailsElement).open)}>
+              <summary className="nav-link">
+                <Icon name="plus" />
+                More records
+              </summary>
+              <NavItems items={MORE} />
+            </details>
+          </div>
+          <div className="nav-group">
+            <span>Learn</span>
+            <NavItems items={LEARN} />
+          </div>
+        </nav>
+        <div className="nav-foot">
+          <div className="small">
+            <span style={{ color: '#fff' }}>{workspace.scenario ? 'Case study' : 'Demo client'}</span> · <Link to="/practice" style={{ color: '#7fd6cd' }}>Switch</Link>
+          </div>
           {LOCAL_BACKEND && <SyncLine />}
+          <ExplainToggle />
         </div>
       </aside>
       <div className="main">
@@ -93,14 +133,13 @@ export function App() {
             <Icon name="menu" size={22} />
           </button>
           <strong>GRC Workbench</strong>
-          <span style={{ marginLeft: 'auto' }}><ExplainToggle compact /></span>
         </div>
         {workspace.scenario && (
           <div className="practice-bar">
-            <span><b>Practice:</b> {workspace.org_name}</span>
+            <span><b>Case study:</b> {workspace.org_name}</span>
             <span className="actions">
               <button className="btn sm" onClick={() => setBriefOpen(!briefOpen)} aria-pressed={briefOpen}>
-                {briefOpen ? 'Hide brief' : 'Show brief beside'}
+                {briefOpen ? 'Hide brief' : 'Brief'}
               </button>
               <Link to="/practice/review" className="btn sm primary">Check my work</Link>
             </span>
@@ -108,7 +147,8 @@ export function App() {
         )}
         {open && <div className="overlay" style={{ zIndex: 35, background: 'rgb(0 0 0 / 0.4)' }} onClick={() => setOpen(false)} />}
         <Routes>
-          <Route path="/" element={<Dashboard />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/risks" element={<Risks />} />
           <Route path="/risks/:id" element={<RiskDetail />} />
           <Route path="/assets" element={<Assets />} />
@@ -143,10 +183,10 @@ export function App() {
 
 function SyncLine() {
   const s = useSyncStatus();
-  const text = !s.code ? 'Saved on this device only.' : s.state === 'syncing' ? 'Syncing…' : s.state === 'error' ? 'Sync problem.' : `Synced ${syncedAgo(s.syncedAt)}.`;
+  const text = !s.code ? 'Sync with your phone' : s.state === 'syncing' ? 'Syncing…' : s.state === 'error' ? 'Sync problem' : `Synced ${syncedAgo(s.syncedAt)}`;
   return (
-    <div style={{ marginTop: 8, color: '#8a98a6' }}>
-      {text} <Link to="/sync" style={{ color: '#7fd6cd' }}>{s.code ? 'Sync settings' : 'Sync with your phone'}</Link>
-    </div>
+    <Link to="/sync" className="nav-sync small">
+      <Icon name="activity" size={14} /> {text}
+    </Link>
   );
 }

@@ -7,7 +7,7 @@ export interface Guide {
 }
 
 export const GUIDES: Record<string, Guide> = {
-  '/': {
+  '/dashboard': {
     what: 'The dashboard is the one-page summary a manager or board would look at. It pulls numbers from every other page.',
     steps: [
       'Read the cards across the top: each one is a headline number. Click a card to open the page behind it.',

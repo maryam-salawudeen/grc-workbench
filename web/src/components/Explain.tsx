@@ -1,5 +1,5 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { createContext, useCallback, useContext, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { GLOSSARY, termById } from '../glossary';
 import { Icon } from './icons';
 
@@ -7,9 +7,11 @@ interface ExplainState {
   on: boolean;
   setOn: (on: boolean) => void;
   open: (id: string) => void;
+  /** Which text block on the current page owns the underline for each term. */
+  claims: { current: { path: string; owners: Map<string, string> } };
 }
 
-const Ctx = createContext<ExplainState>({ on: false, setOn: () => {}, open: () => {} });
+const Ctx = createContext<ExplainState>({ on: false, setOn: () => {}, open: () => {}, claims: { current: { path: '', owners: new Map() } } });
 export const useExplain = () => useContext(Ctx);
 
 const STORAGE_KEY = 'grc-explain-mode';
@@ -33,7 +35,8 @@ export function ExplainProvider({ children }: { children: ReactNode }) {
       // Storage unavailable: the choice lasts for this visit only.
     }
   }, []);
-  const value = useMemo(() => ({ on, setOn, open: setCurrent }), [on, setOn]);
+  const claims = useRef({ path: '', owners: new Map<string, string>() });
+  const value = useMemo(() => ({ on, setOn, open: setCurrent, claims }), [on, setOn]);
 
   return (
     <Ctx.Provider value={value}>
@@ -127,16 +130,26 @@ const PATTERN = new RegExp(
   'g',
 );
 
-/** Text with every glossary term made explainable (first mention of each term only). */
+/**
+ * Text with glossary terms made explainable. Each term is underlined once per page,
+ * at its first appearance, so pages stay readable.
+ */
 export function Explained({ text }: { text: ReactNode }) {
-  const { on } = useExplain();
+  const { on, claims } = useExplain();
+  const self = useId();
+  const { pathname } = useLocation();
   if (!on || typeof text !== 'string') return <>{text}</>;
+  if (claims.current.path !== pathname) claims.current = { path: pathname, owners: new Map() };
+  const owners = claims.current.owners;
   const parts: ReactNode[] = [];
   const seen = new Set<string>();
   let last = 0;
   for (const m of text.matchAll(PATTERN)) {
     const id = aliasToId.get(m[1])!;
     if (seen.has(id)) continue;
+    const owner = owners.get(id);
+    if (owner && owner !== self) continue;
+    owners.set(id, self);
     seen.add(id);
     parts.push(text.slice(last, m.index));
     parts.push(

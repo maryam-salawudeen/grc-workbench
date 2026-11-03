@@ -69,27 +69,28 @@ export function PageHeader({ title, description, crumbs, actions }: { title: Rea
 function PageGuide() {
   const { pathname } = useLocation();
   const guide = guideFor(pathname);
-  const key = `grc-guide-closed-${pathname.startsWith('/inbox/') ? '/inbox/:id' : pathname.replace(/\/\d+$/, '/:id')}`;
+  // Closed by default so pages open on their content; remembered per page once opened.
+  const key = `grc-guide-open-${pathname.startsWith('/inbox/') ? '/inbox/:id' : pathname.replace(/\/\d+$/, '/:id')}`;
   const [open, setOpen] = useState(() => {
     try {
-      return localStorage.getItem(key) !== '1';
+      return localStorage.getItem(key) === '1';
     } catch {
-      return true;
+      return false;
     }
   });
   if (!guide) return null;
   const toggle = (next: boolean) => {
     setOpen(next);
     try {
-      if (next) localStorage.removeItem(key);
-      else localStorage.setItem(key, '1');
+      if (next) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
     } catch {
       // ignore
     }
   };
   return (
     <details className="page-guide" open={open} onToggle={(e) => toggle((e.target as HTMLDetailsElement).open)}>
-      <summary>New here? How to use this page</summary>
+      <summary>How to use this page</summary>
       <p><Explained text={guide.what} /></p>
       <ol>
         {guide.steps.map((s, i) => <li key={i}><Explained text={s} /></li>)}

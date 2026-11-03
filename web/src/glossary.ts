@@ -26,7 +26,7 @@ export const GLOSSARY: Term[] = [
     related: ['risk', 'policy', 'framework', 'compliance'],
   },
   {
-    id: 'risk', term: 'Risk', aliases: ['Risk'], group: 'The basics',
+    id: 'risk', term: 'Risk', aliases: ['a risk', 'risks to'], group: 'The basics',
     short: 'Something bad that might happen, and how much it would hurt.',
     explain: 'A risk has three parts: a threat (who or what could cause harm), a vulnerability (the weakness they would use) and an impact (the damage). Writing it as "threat exploits vulnerability, causing impact" makes it clear.',
     example: '"Phishing emails (threat) trick staff into giving passwords because MFA is off (vulnerability), letting attackers read patient emails (impact)."',
