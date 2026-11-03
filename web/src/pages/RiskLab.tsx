@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { IMPACT_LABELS, LIKELIHOOD_LABELS, RISK_APPETITE, quantitative, riskLevel, riskScore, safeguardValue } from '../../../shared/scoring.ts';
 import { fmtMoney } from '../api';
 import { LevelBadge, PageHeader, Score } from '../components/ui';
+import { QuantGuide, QuantWorking, aroInWords, efInWords } from '../components/QuantExplain';
 
 const LEVEL_ACTION: Record<string, string> = {
   low: 'Accept and monitor through routine reviews.',
@@ -39,31 +40,65 @@ function Calculator() {
         <span className="small muted">CISSP Domain 1</span>
       </div>
       <div className="card-body">
+        <div style={{ marginBottom: 16 }}>
+          <QuantGuide open />
+        </div>
         <div className="grid cols-2">
           <div>
             <h3 style={{ marginBottom: 10 }}>Without the safeguard</h3>
             <div className="form-grid">
-              <NumberInput label="Asset value (AV)" value={av} onChange={setAv} />
-              <NumberInput label="Exposure factor (EF %)" value={ef} onChange={setEf} help="Share of AV lost per event" />
-              <NumberInput label="Annualised rate (ARO)" value={aro} onChange={setAro} help="0.5 = once every 2 years" />
+              <NumberInput label="Asset value (AV, $)" value={av} onChange={setAv} help="What is at stake" />
+              <NumberInput label="Exposure factor (EF, %)" value={ef} onChange={setEf} help={`So ${efInWords(ef)}`} />
+              <NumberInput label="Annualised rate (ARO)" value={aro} onChange={setAro} help={`Expected ${aroInWords(aro)}`} />
             </div>
-            <div className="formula" style={{ marginTop: 12 }}>
-              SLE = AV × EF = {fmtMoney(av)} × {ef}% = <b>{fmtMoney(before.sle)}</b>
-              <br />
-              ALE = SLE × ARO = {fmtMoney(before.sle)} × {aro} = <b>{fmtMoney(before.ale)}</b>
+            <div style={{ marginTop: 12 }}>
+              <QuantWorking av={av} ef={ef} aro={aro} title="Step by step" />
             </div>
           </div>
           <div>
             <h3 style={{ marginBottom: 10 }}>With the safeguard</h3>
             <div className="form-grid">
-              <NumberInput label="EF after (%)" value={efAfter} onChange={setEfAfter} />
-              <NumberInput label="ARO after" value={aroAfter} onChange={setAroAfter} />
-              <NumberInput label="Annual cost of safeguard" value={cost} onChange={setCost} help="Purchase, licences, staff time, per year" />
+              <NumberInput label="EF after (%)" value={efAfter} onChange={setEfAfter} help={`So ${efInWords(efAfter)}`} />
+              <NumberInput label="ARO after" value={aroAfter} onChange={setAroAfter} help={`Expected ${aroInWords(aroAfter)}`} />
+              <NumberInput label="Annual cost of safeguard ($)" value={cost} onChange={setCost} help="Purchase, licences, staff time, per year" />
             </div>
-            <div className="formula" style={{ marginTop: 12 }}>
-              ALE after = {fmtMoney(after.sle)} × {aroAfter} = <b>{fmtMoney(after.ale)}</b>
-              <br />
-              Value = ALE before − ALE after − cost = <b style={{ color: value >= 0 ? 'var(--low)' : 'var(--critical)' }}>{fmtMoney(value)}</b>
+            <p className="small muted" style={{ marginTop: 10 }}>
+              A safeguard works by lowering EF (less damage per incident, like backups or encryption) or ARO (fewer incidents, like MFA or training), or both. AV stays the same: the asset is worth what it is worth.
+            </p>
+            <div className="quant-working" style={{ marginTop: 12 }}>
+              <div className="small" style={{ fontWeight: 600, marginBottom: 6 }}>Is it worth it?</div>
+              <table>
+                <tbody>
+                  <tr>
+                    <td className="mono"><b>1</b></td>
+                    <td>
+                      <div className="num"><b>{fmtMoney(before.ale)} a year</b></div>
+                      <div className="small muted">ALE before: what the risk costs on average today</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="mono"><b>2</b></td>
+                    <td>
+                      <div className="num"><b>{fmtMoney(after.sle)} × {aroAfter} = {fmtMoney(after.ale)} a year</b></div>
+                      <div className="small muted">ALE after: new SLE (AV × EF after) × ARO after</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className="mono"><b>3</b></td>
+                    <td>
+                      <div className="num"><b>{fmtMoney(before.ale - after.ale)} a year</b></div>
+                      <div className="small muted">Loss avoided: ALE before − ALE after</div>
+                    </td>
+                  </tr>
+                  <tr className="calc">
+                    <td className="mono"><b>4</b></td>
+                    <td>
+                      <div className="num"><b style={{ color: value >= 0 ? 'var(--low)' : 'var(--critical)' }}>{fmtMoney(before.ale - after.ale)} − {fmtMoney(cost)} = {fmtMoney(value)}</b></div>
+                      <div className="small muted">Safeguard value: loss avoided − annual cost of the safeguard</div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>

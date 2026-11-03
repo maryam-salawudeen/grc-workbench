@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { RISK_APPETITE } from '../../../shared/scoring.ts';
-import { api, fmtDate, fmtMoney, humanize, useApi, type Row } from '../api';
+import { api, fmtDate, humanize, useApi, type Row } from '../api';
 import { useLookups } from '../lookups';
 import { EntityForm } from '../components/EntityForm';
 import { Picker } from '../components/Picker';
+import { QuantWorking } from '../components/QuantExplain';
 import { Icon } from '../components/icons';
 import { LevelBadge, Loading, PageHeader, Score, StatusBadge, toast } from '../components/ui';
 import { RISK_FIELDS, RiskPreview } from './riskFields';
@@ -85,10 +86,8 @@ export function RiskDetail() {
               Appetite is a residual score of {RISK_APPETITE} or less. {r.above_appetite ? 'This risk needs further treatment or a formal acceptance by the owner.' : 'This risk is within appetite.'}
             </p>
             {r.ale != null && (
-              <div className="formula" style={{ marginTop: 12 }}>
-                SLE = {fmtMoney(r.asset_value)} × {r.exposure_factor}% = <b>{fmtMoney(r.sle)}</b>
-                <br />
-                ALE = {fmtMoney(r.sle)} × {r.aro} = <b>{fmtMoney(r.ale)}</b> / year
+              <div style={{ marginTop: 14 }}>
+                <QuantWorking av={r.asset_value} ef={r.exposure_factor} aro={r.aro} title="Quantitative analysis" />
               </div>
             )}
           </div>
