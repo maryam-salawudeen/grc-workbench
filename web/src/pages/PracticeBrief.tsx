@@ -33,7 +33,7 @@ function Brief({ s }: { s: Row }) {
   return (
     <div className="page">
       <PageHeader
-        crumbs={<><Link to="/practice">Practice scenarios</Link> / {s.sector}</>}
+        crumbs={<><Link to="/practice">Case studies</Link> / {s.sector}</>}
         title={s.org}
         description={
           <span className="actions">

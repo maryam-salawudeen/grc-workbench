@@ -69,7 +69,7 @@ export function PageHeader({ title, description, crumbs, actions }: { title: Rea
 function PageGuide() {
   const { pathname } = useLocation();
   const guide = guideFor(pathname);
-  const key = `grc-guide-closed-${pathname.replace(/\/\d+$/, '/:id')}`;
+  const key = `grc-guide-closed-${pathname.startsWith('/inbox/') ? '/inbox/:id' : pathname.replace(/\/\d+$/, '/:id')}`;
   const [open, setOpen] = useState(() => {
     try {
       return localStorage.getItem(key) !== '1';

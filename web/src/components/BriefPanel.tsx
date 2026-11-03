@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { fmtMoney, humanize, type Row } from '../api';
 import { useWorkspace } from '../workspace';
 import { useBriefOpen, useChecklist, usePersistentState } from '../persist';
@@ -36,14 +36,16 @@ export function BriefPanel() {
   const { scenario: s } = useWorkspace();
   const [open, setOpen] = useBriefOpen();
   const [tab, setTab] = usePersistentState<Tab>('grc-brief-tab', 'brief');
+  // The brief belongs to the case study; inbox requests carry their own attachments.
+  const inInbox = useLocation().pathname.startsWith('/inbox');
 
-  const active = !!s && open;
+  const active = !!s && open && !inInbox;
   useEffect(() => {
     document.body.classList.toggle('brief-open', active);
     return () => document.body.classList.remove('brief-open');
   }, [active]);
 
-  if (!s) return null;
+  if (!s || inInbox) return null;
   if (!open) {
     return (
       <button type="button" className="brief-fab" onClick={() => setOpen(true)}>

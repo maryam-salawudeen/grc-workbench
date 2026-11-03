@@ -4,6 +4,8 @@ import { RISK_APPETITE } from '../../../shared/scoring.ts';
 import { fmtCompact, fmtDate, humanize, useApi, type Row } from '../api';
 import { HeatMap, cellOf, type HeatMode } from '../components/HeatMap';
 import { useWorkspace } from '../workspace';
+import { LABS } from '../../../shared/labs/index.ts';
+import { useAllLabProgress } from '../labProgress';
 import { Explained } from '../components/Explain';
 import { CoverageBar, LevelBadge, Loading, PageHeader, Ring, Score, StatusBadge, complianceColor } from '../components/ui';
 
@@ -62,6 +64,8 @@ export function Dashboard() {
           <div className="sub">{data.vendors.tier1} Tier 1 of {data.vendors.total} vendors</div>
         </Link>
       </div>
+
+      <TodaysWork />
 
       <div className="split" style={{ marginBottom: 16 }}>
         <div className="card">
@@ -169,6 +173,40 @@ export function Dashboard() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+/** The next few requests in the work inbox, so the day starts with work like a real job. */
+function TodaysWork() {
+  const progress = useAllLabProgress();
+  const todo = LABS.filter((l) => !progress[l.id].done);
+  const done = LABS.length - todo.length;
+  return (
+    <div className="card" style={{ marginBottom: 16 }}>
+      <div className="card-head">
+        <div>
+          <h2>Your inbox</h2>
+          <div className="small muted">{done} of {LABS.length} client requests done</div>
+        </div>
+        <Link to="/inbox" className="small">Open the work inbox</Link>
+      </div>
+      {todo.length ? (
+        <ul className="list">
+          {todo.slice(0, 3).map((l) => (
+            <li key={l.id}>
+              <span className="date faint">{l.received.split(' ')[0]}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <Link to={`/inbox/${l.id}`} style={{ fontWeight: 500 }}>{l.title}</Link>
+                <div className="small muted">{l.from.name}, {l.client} · CISSP Domain {l.domain}</div>
+              </div>
+              {l.priority !== 'Normal' && <span className={`badge ${l.priority === 'Urgent' ? 'bad' : 'warn'}`}>{l.priority}</span>}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <div className="empty">Inbox zero. Every request is done; try a case study next.</div>
+      )}
     </div>
   );
 }

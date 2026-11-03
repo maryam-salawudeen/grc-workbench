@@ -126,8 +126,27 @@ export const GUIDES: Record<string, Guide> = {
     what: 'People are the owners you assign to risks, controls, policies and vendors.',
     steps: ['Add anyone who should own something. Accountability needs a name, not a department.'],
   },
+  '/inbox': {
+    what: 'Your work inbox. As a junior GRC analyst at a consultancy, you get requests from client staff: emails, tickets and Teams messages, each with the files you need.',
+    steps: [
+      'Start at the top of Week 1. The requests get harder week by week, like a real first month.',
+      'Open a request, read the message and the attachments, then work through the steps on the right.',
+      'Submit each step to get feedback straight away. Retry any step if you want to improve your score.',
+      'When every step is done, read the debrief: what the work looks like on the job, plus a CISSP exam tip.',
+    ],
+    tip: 'Filter by CISSP domain to practise the area you are studying this week.',
+  },
+  '/inbox/:id': {
+    what: 'One request from a client. The message and its attachments are on the left; your deliverable is on the right.',
+    steps: [
+      'Read the whole message first, as you would at work. Note who is asking and what they actually need.',
+      'Use the attachments as your evidence. Most answers depend on a detail in a table or policy extract.',
+      'Answer each step and submit it. Green means correct, amber partly right, red not quite. Every option explains why.',
+      'For written steps, write your own answer first, then compare it with the model answer and tick what you covered.',
+    ],
+  },
   '/practice': {
-    what: 'Practice scenarios are fictional organisations you assess from scratch, then compare with a model answer.',
+    what: 'Case studies are client engagements: you assess a whole organisation from a brief and build its risk register, then compare with a model answer.',
     steps: [
       'Start with the Foundation scenario (the clinic).',
       'Click "Start scenario": you get a separate, empty workspace. The demo data is not affected.',
@@ -185,6 +204,7 @@ export const GUIDES: Record<string, Guide> = {
 /** Turn a pathname like /risks/12 into its guide key, /risks/:id. */
 export function guideFor(pathname: string): Guide | undefined {
   if (GUIDES[pathname]) return GUIDES[pathname];
+  if (pathname.startsWith('/inbox/')) return GUIDES['/inbox/:id'];
   const generic = pathname.replace(/\/\d+$/, '/:id');
   return GUIDES[generic];
 }

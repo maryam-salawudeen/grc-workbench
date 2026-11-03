@@ -36,8 +36,8 @@ export function Practice() {
   return (
     <div className="page">
       <PageHeader
-        title="Practice scenarios"
-        description="Each scenario is a fictional organisation with its own empty risk register. Read the brief, build the register, then check your work against a model answer. Your demo data is kept separately."
+        title="Case studies"
+        description="Bigger engagements alongside your inbox work. Each client has its own empty risk register: read the brief, build the register, then check your work against a model answer. The demo organisation is kept separately."
       />
 
       <div className="grid cols-2">

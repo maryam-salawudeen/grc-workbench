@@ -133,7 +133,7 @@ export function PracticeReview() {
   return (
     <div className="page">
       <PageHeader
-        crumbs={<><Link to="/practice">Practice scenarios</Link> / <Link to="/practice/brief">{data.scenario.org}</Link></>}
+        crumbs={<><Link to="/practice">Case studies</Link> / <Link to="/practice/brief">{data.scenario.org}</Link></>}
         title="Check my work"
         description="Your register compared with the model answer. Update your risks and come back: the review recalculates every time you open it."
         actions={<><Link className="btn" to="/practice/brief">Back to brief</Link><Link className="btn primary" to="/risks">Edit my register</Link></>}

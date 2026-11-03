@@ -6,6 +6,8 @@ import { Practice } from './pages/Practice';
 import { PracticeBrief } from './pages/PracticeBrief';
 import { PracticeReview } from './pages/PracticeReview';
 import { Glossary } from './pages/Glossary';
+import { Inbox } from './pages/Inbox';
+import { LabPlayer } from './pages/LabPlayer';
 import { WebsiteCheck } from './pages/WebsiteCheck';
 import { ExplainToggle } from './components/Explain';
 import { BriefPanel } from './components/BriefPanel';
@@ -23,7 +25,7 @@ import { RiskLab } from './pages/RiskLab';
 import { Assessments, Assets, Controls, Findings, People, Policies, Vendors } from './pages/registers';
 
 const NAV: { group: string; items: [to: string, label: string, icon: string][] }[] = [
-  { group: 'Overview', items: [['/', 'Dashboard', 'dashboard']] },
+  { group: 'My work', items: [['/inbox', 'Work inbox', 'inbox'], ['/practice', 'Case studies', 'case'], ['/', 'Dashboard', 'dashboard']] },
   { group: 'Risk', items: [['/risks', 'Risk register', 'risk'], ['/assets', 'Assets', 'asset']] },
   {
     group: 'Compliance',
@@ -36,7 +38,7 @@ const NAV: { group: string; items: [to: string, label: string, icon: string][] }
     ],
   },
   { group: 'Governance', items: [['/policies', 'Policies', 'policy'], ['/vendors', 'Vendors', 'vendor'], ['/people', 'People', 'people']] },
-  { group: 'Learn', items: [['/practice', 'Practice scenarios', 'assessment'], ['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
+  { group: 'Learn', items: [['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
 ];
 
 export function App() {
@@ -59,7 +61,7 @@ export function App() {
           </svg>
           <div>
             GRC Workbench
-            <small>Risk & compliance</small>
+            <small>GRC work simulator</small>
           </div>
         </div>
         <div style={{ padding: '0 10px 14px' }}>
@@ -120,6 +122,8 @@ export function App() {
           <Route path="/lab" element={<RiskLab />} />
           <Route path="/practice" element={<Practice />} />
           <Route path="/glossary" element={<Glossary />} />
+          <Route path="/inbox" element={<Inbox />} />
+          <Route path="/inbox/:id" element={<LabPlayer />} />
           <Route path="/website-check" element={<WebsiteCheck />} />
           <Route path="/practice/brief" element={<PracticeBrief />} />
           <Route path="/practice/review" element={<PracticeReview />} />
