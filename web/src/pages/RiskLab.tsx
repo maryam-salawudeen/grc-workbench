@@ -231,7 +231,7 @@ function Quiz() {
                   return (
                     <button
                       key={k}
-                      className="btn sm"
+                      className="btn sm quiz-option"
                       disabled={choice != null}
                       style={state ? { borderColor: `var(--${state === 'good' ? 'low' : 'critical'})`, color: `var(--${state === 'good' ? 'low' : 'critical'})`, opacity: 1 } : undefined}
                       onClick={() => setPicked((p) => p.map((v, i) => (i === n ? k : v)))}

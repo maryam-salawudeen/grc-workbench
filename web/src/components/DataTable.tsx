@@ -49,7 +49,26 @@ export function DataTable({
 
   return (
     <div className="table-wrap">
-      <table>
+      <div className="mobile-sort">
+        <label htmlFor={`sort-${columns[0].key}`}>Sort by</label>
+        <select
+          id={`sort-${columns[0].key}`}
+          value={sort ? `${sort.key}:${sort.dir}` : ''}
+          onChange={(e) => {
+            const [key, dir] = e.target.value.split(':');
+            setSort(key ? { key, dir: Number(dir) as 1 | -1 } : null);
+          }}
+        >
+          <option value="">Default order</option>
+          {columns
+            .filter((c) => c.label)
+            .flatMap((c) => [
+              <option key={`${c.key}:1`} value={`${c.key}:1`}>{c.label} (A–Z / low–high)</option>,
+              <option key={`${c.key}:-1`} value={`${c.key}:-1`}>{c.label} (Z–A / high–low)</option>,
+            ])}
+        </select>
+      </div>
+      <table className="stack">
         <thead>
           <tr>
             {columns.map((c) => (
@@ -70,7 +89,7 @@ export function DataTable({
               onKeyDown={onRowClick ? (e) => e.key === 'Enter' && onRowClick(r) : undefined}
             >
               {columns.map((c) => (
-                <td key={c.key} className={c.className}>
+                <td key={c.key} className={c.className} data-label={c.label}>
                   {c.render ? c.render(r) : (r[c.key] ?? <span className="faint">—</span>)}
                 </td>
               ))}
