@@ -8,7 +8,7 @@ import { fromBase64, newSyncCode, normaliseCode, openBundle, sealBundle, syncId,
 const K = { code: 'grc-sync-code', etag: 'grc-sync-etag', syncedAt: 'grc-sync-at', changedAt: 'grc-sync-changed' };
 
 /** Per-device preferences that should not follow the user between a phone and a laptop. */
-const DEVICE_ONLY = [/^grc-sync-/, /^grc-guide-closed-/, /^grc-brief-open$/, /^grc-brief-tab$/, /^grc-explain-mode$/];
+const DEVICE_ONLY = [/^grc-sync-/, /^grc-theme-/, /^grc-guide-closed-/, /^grc-brief-open$/, /^grc-brief-tab$/, /^grc-explain-mode$/];
 const isSynced = (key: string) => key.startsWith('grc-') && !DEVICE_ONLY.some((r) => r.test(key));
 
 export type SyncState = 'off' | 'idle' | 'syncing' | 'error';

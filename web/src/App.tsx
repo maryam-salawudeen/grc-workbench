@@ -13,6 +13,7 @@ import { syncedAgo, useSyncStatus } from './useSync';
 import { LabPlayer } from './pages/LabPlayer';
 import { WebsiteCheck } from './pages/WebsiteCheck';
 import { ExplainToggle } from './components/Explain';
+import { ThemePicker } from './components/ThemePicker';
 import { BriefPanel } from './components/BriefPanel';
 import { useBriefOpen } from './persist';
 import { Icon } from './components/icons';
@@ -87,7 +88,7 @@ export function App() {
     <div className="shell">
       <aside className={`sidebar ${open ? 'open' : ''}`} aria-label="Main navigation">
         <div className="brand">
-          <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+          <svg className="brand-mark" width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
             <path d="M16 2 4 7v8c0 7.5 5.1 13.4 12 15 6.9-1.6 12-7.5 12-15V7z" fill="#3fb7ad" />
             <path d="M11 16l3.5 3.5L21 13" fill="none" stroke="#0a1016" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -121,9 +122,10 @@ export function App() {
         </nav>
         <div className="nav-foot">
           <div className="small">
-            <span style={{ color: '#fff' }}>{workspace.scenario ? 'Case study' : 'Demo client'}</span> · <Link to="/practice" style={{ color: '#7fd6cd' }}>Switch</Link>
+            <span style={{ color: 'var(--nav-strong)' }}>{workspace.scenario ? 'Case study' : 'Demo client'}</span> · <Link to="/practice" className="nav-accent-link">Switch</Link>
           </div>
           {LOCAL_BACKEND && <SyncLine />}
+          <ThemePicker />
           <ExplainToggle />
         </div>
       </aside>
