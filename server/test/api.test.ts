@@ -1,6 +1,6 @@
 import { beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
-import { openDb } from '../src/db.ts';
+import { openDb } from '../src/db-node.ts';
 import { createApp } from '../src/app.ts';
 import { seed } from '../src/seed.ts';
 

@@ -1,5 +1,7 @@
 # GRC Workbench
 
+**Live app: https://grc-workbench.vercel.app** (free, nothing to install; your work is saved privately in your own browser)
+
 An enterprise risk assessment and governance, risk & compliance (GRC) platform. It runs a risk register, a common control set mapped to three frameworks, audits, findings, a policy library and third-party risk, all in one place. It ships with demo data for a fictional organisation, **Maple Ridge Credit Union**.
 
 Built as a portfolio project and a CISSP / GRC study aid: every score in the app comes from a formula you can see and practise in the **Risk lab**.
@@ -84,10 +86,24 @@ npm run typecheck
 npm run seed       # wipe and reload the demo data
 ```
 
-### Production
+### Hosted version (Vercel)
+
+The public site is a static build where the whole API runs **inside the visitor's browser**:
+
+- the same Hono API code (`server/src/app.ts`) is bundled into the web app;
+- SQLite runs as WebAssembly ([sql.js](https://sql.js.org)) behind the same small database interface as `node:sqlite`;
+- each workspace (demo and practice scenarios) is saved in the browser's IndexedDB, so every visitor gets a private copy and nobody can change anyone else's work;
+- the website check is the one server step: [`api/site-check.ts`](api/site-check.ts) is a stateless Vercel function that stores nothing and refuses private and internal addresses.
 
 ```bash
-npm run build && npm start        # serves UI + API on $PORT (default 8787)
+npm run build:hosted -w web   # what Vercel builds (VITE_LOCAL_BACKEND=1)
+vercel deploy --prod
+```
+
+### Self-hosted server
+
+```bash
+npm run build && npm start        # serves UI + API on $PORT (default 8787), data in SQLite files
 ```
 
 or with Docker (mount a volume so data survives restarts):
@@ -96,8 +112,6 @@ or with Docker (mount a volume so data survives restarts):
 docker build -t grc-workbench .
 docker run -p 8080:8080 -v grc-data:/data grc-workbench
 ```
-
-Works on any host that runs a container with a persistent disk (Fly.io, Render, Railway, Azure Container Apps).
 
 ## Roadmap
 

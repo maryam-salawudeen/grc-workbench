@@ -4,7 +4,7 @@ import { z } from 'zod';
 import { getSetting, logActivity, transaction, type DB } from './db.ts';
 import { publicScenario, reviewScenario } from './practice.ts';
 import { scenarioById } from './scenarios.ts';
-import { SiteCheckError, checkSite, type SiteCheckItem } from './sitecheck.ts';
+import { SiteCheckError, type SiteCheckItem, type SiteReport } from './sitecheck-core.ts';
 import { ENTITIES, isOpenFinding, type Entity, type Row } from './entities.ts';
 import { domainBreakdown, frameworkCoverage, frameworkSummaries, suggestedResult, summarise } from './compliance.ts';
 import { daysBetween, todayISO } from '../../shared/scoring.ts';
@@ -20,7 +20,15 @@ const idList = z.object({ ids: z.array(z.number().int().positive()).max(500) });
 /** node:sqlite binds numbers, strings and null, so booleans become 0/1. */
 const toSql = (v: unknown) => (typeof v === 'boolean' ? Number(v) : v === undefined ? null : v);
 
-export function createApp(source: DB | (() => DB), today: () => string = todayISO, extend?: (api: Hono) => void) {
+export interface AppOptions {
+  today?: () => string;
+  /** Extra routes (workspace switching) registered before the generic CRUD routes. */
+  extend?: (api: Hono) => void;
+  /** Runs a website check: directly in Node, or through a server function from the browser. */
+  runSiteCheck?: (url: string) => Promise<SiteReport>;
+}
+
+export function createApp(source: DB | (() => DB), { today = todayISO, extend, runSiteCheck }: AppOptions = {}) {
   // A getter so the active practice workspace can be swapped without rebuilding the app.
   const db = typeof source === 'function' ? source : () => source;
   const app = new Hono();
@@ -316,9 +324,10 @@ export function createApp(source: DB | (() => DB), today: () => string = todayIS
 
   api.post('/site-checks', async (c) => {
     const { url, permission } = z.object({ url: z.string().min(1).max(500), permission: z.literal(true, { errorMap: () => ({ message: 'Confirm you own the site or have permission to check it' }) }) }).parse(await c.req.json());
+    if (!runSiteCheck) throw new HTTPException(501, { message: 'Website checks are not available here' });
     let report;
     try {
-      report = await checkSite(url);
+      report = await runSiteCheck(url);
     } catch (e) {
       if (e instanceof SiteCheckError) throw new HTTPException(400, { message: e.message });
       throw e;

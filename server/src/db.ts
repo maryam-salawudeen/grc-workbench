@@ -1,8 +1,17 @@
-import { DatabaseSync } from 'node:sqlite';
-import { mkdirSync } from 'node:fs';
-import { dirname } from 'node:path';
+// The schema and helpers here run anywhere: Node (node:sqlite, see db-node.ts)
+// or the browser (sql.js, see web/src/local). Both provide this small interface.
 
-export type DB = DatabaseSync;
+export interface Statement {
+  all(...params: any[]): unknown[];
+  get(...params: any[]): unknown;
+  run(...params: any[]): { changes: number | bigint; lastInsertRowid: number | bigint };
+}
+
+export interface DB {
+  exec(sql: string): void;
+  prepare(sql: string): Statement;
+  close(): void;
+}
 
 const SCHEMA = `
 CREATE TABLE IF NOT EXISTS people (
@@ -191,13 +200,9 @@ CREATE TABLE IF NOT EXISTS activity (
 );
 `;
 
-export function openDb(file: string): DB {
-  if (file !== ':memory:') mkdirSync(dirname(file), { recursive: true });
-  const db = new DatabaseSync(file);
+export function initSchema(db: DB) {
   db.exec('PRAGMA foreign_keys = ON;');
-  if (file !== ':memory:') db.exec('PRAGMA journal_mode = WAL;');
   db.exec(SCHEMA);
-  return db;
 }
 
 export function transaction<T>(db: DB, fn: () => T): T {

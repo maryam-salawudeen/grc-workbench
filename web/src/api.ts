@@ -10,12 +10,16 @@ export class ApiError extends Error {
   }
 }
 
+/** The hosted build runs the API inside the browser; local development talks to the Node server. */
+export const LOCAL_BACKEND = import.meta.env.VITE_LOCAL_BACKEND === '1';
+
 export async function api<T = any>(path: string, opts: { method?: string; body?: unknown } = {}): Promise<T> {
-  const res = await fetch(`/api${path}`, {
+  const init: RequestInit = {
     method: opts.method ?? 'GET',
     headers: opts.body !== undefined ? { 'content-type': 'application/json' } : undefined,
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
-  });
+  };
+  const res = LOCAL_BACKEND ? await (await import('./local/backend')).localFetch(path, init) : await fetch(`/api${path}`, init);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new ApiError(data.error ?? `Request failed (${res.status})`, data.issues);
   return data as T;

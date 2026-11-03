@@ -114,7 +114,8 @@ export function EntityForm({
 
   const input = (f: Field) => {
     const id = `f-${f.name}`;
-    const common = { id, name: f.name, required: f.required, disabled: f.disabled };
+    // Explain mode turns words in the label into buttons, which screen readers leave out of the field's name.
+    const common = { id, name: f.name, required: f.required, disabled: f.disabled, 'aria-label': f.label };
     const value = values[f.name] ?? '';
     switch (f.type) {
       case 'textarea':

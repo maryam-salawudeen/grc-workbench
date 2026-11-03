@@ -5,9 +5,17 @@ import { App } from './App';
 import { LookupsProvider } from './lookups';
 import { WorkspaceProvider } from './workspace';
 import { ExplainProvider } from './components/Explain';
+import { LOCAL_BACKEND } from './api';
 import './styles.css';
 
-createRoot(document.getElementById('root')!).render(
+const root = createRoot(document.getElementById('root')!);
+
+if (LOCAL_BACKEND) {
+  root.render(<div className="spinner">Setting up your private workspace…</div>);
+  await (await import('./local/backend')).initLocalBackend();
+}
+
+root.render(
   <StrictMode>
     <BrowserRouter>
       <ExplainProvider>

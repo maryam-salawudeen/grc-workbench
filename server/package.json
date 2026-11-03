@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "API_PORT=8787 node --watch src/index.ts",
     "start": "NODE_ENV=production node src/index.ts",
-    "seed": "node src/seed.ts --reset",
+    "seed": "node src/seed-cli.ts --reset",
     "test": "node --test test/*.test.ts",
     "typecheck": "tsc --noEmit"
   },

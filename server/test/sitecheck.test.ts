@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { analyse, assertPublicHost, grade, isPrivateAddress, normaliseUrl, SiteCheckError, type Observations } from '../src/sitecheck.ts';
-import { openDb } from '../src/db.ts';
+import { analyse, assertPublicHost, checkSite, grade, isPrivateAddress, normaliseUrl, SiteCheckError, type Observations } from '../src/sitecheck.ts';
+import { openDb } from '../src/db-node.ts';
 import { createApp } from '../src/app.ts';
 import { seed } from '../src/seed.ts';
 
@@ -55,6 +55,13 @@ test('a well-configured site passes every check and grades A', () => {
   for (const i of items) assert.ok(i.explain && i.why && i.fix && i.analyst && i.refs.length, i.id);
 });
 
+test('only inline scripts weaken a CSP, not inline styles', () => {
+  const withCsp = (csp: string) => analyse({ ...strong, https: { ...strong.https, headers: { ...strong.https.headers, 'content-security-policy': csp } } }).find((i) => i.id === 'csp')!.status;
+  assert.equal(withCsp("default-src 'self'; style-src 'self' 'unsafe-inline'"), 'pass');
+  assert.equal(withCsp("default-src 'self'; script-src 'self' 'unsafe-inline'"), 'warn');
+  assert.equal(withCsp("default-src 'self' 'unsafe-inline'"), 'warn');
+});
+
 test('a weak site gets explained warnings and a lower grade', () => {
   const weak: Observations = {
     ...strong,
@@ -82,7 +89,7 @@ test('a weak site gets explained warnings and a lower grade', () => {
 test('the API requires permission and refuses internal targets', async () => {
   const db = openDb(':memory:');
   seed(db);
-  const app = createApp(db);
+  const app = createApp(db, { runSiteCheck: checkSite });
   const post = (body: unknown) => app.request('/api/site-checks', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
   assert.equal((await post({ url: 'example.com' })).status, 400);
   const local = await post({ url: 'http://localhost:8787', permission: true });

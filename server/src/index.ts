@@ -4,14 +4,15 @@ import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 import { dirname, join } from 'node:path';
 import { createApp } from './app.ts';
-import { createWorkspaces, workspaceRoutes } from './practice.ts';
-import { todayISO } from '../../shared/scoring.ts';
+import { workspaceRoutes } from './practice.ts';
+import { nodeWorkspaces } from './workspaces-node.ts';
+import { checkSite } from './sitecheck.ts';
 
 // The demo lives in DB_PATH; each practice scenario gets its own file next to it.
 const dbFile = process.env.DB_PATH ?? fileURLToPath(new URL('../../data/grc.db', import.meta.url));
-const workspaces = createWorkspaces(dbFile, join(dirname(dbFile), 'practice'));
+const workspaces = nodeWorkspaces(dbFile, join(dirname(dbFile), 'practice'));
 
-const app = createApp(workspaces.db, todayISO, workspaceRoutes(workspaces));
+const app = createApp(workspaces.db, { extend: workspaceRoutes(workspaces), runSiteCheck: checkSite });
 
 // In production the API also serves the built React app.
 const webDist = fileURLToPath(new URL('../../web/dist', import.meta.url));

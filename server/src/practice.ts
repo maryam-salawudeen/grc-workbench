@@ -1,10 +1,8 @@
 // Practice mode: one SQLite file per scenario, plus the review that compares a
 // learner's register with the scenario's model answer.
-import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { join } from 'node:path';
 import type { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
-import { getSetting, logActivity, openDb, setSetting, transaction, type DB } from './db.ts';
+import { getSetting, logActivity, setSetting, transaction, type DB } from './db.ts';
 import { decorateRisk, type Row } from './entities.ts';
 import { isEmpty, seed, seedControlLibrary, seedFrameworks } from './seed.ts';
 import { SCENARIOS, scenarioById, LEVEL_NAMES, type ModelRisk, type Scenario } from './scenarios.ts';
@@ -190,58 +188,59 @@ export function reviewScenario(db: DB, s: Scenario) {
 
 // ---- Workspaces -------------------------------------------------------------
 
+/** Where workspace databases live: files in Node, browser storage on the hosted version. */
+export interface WorkspaceBackend {
+  exists(id: string): boolean;
+  /** Open the workspace database, creating an empty one (schema only) if needed. */
+  open(id: string): DB;
+  /** Delete the workspace's stored data (the connection is already closed). */
+  remove(id: string): void;
+  loadActive(): string | null;
+  saveActive(id: string): void;
+}
+
 export type Workspaces = ReturnType<typeof createWorkspaces>;
 
-/** Demo plus one database per practice scenario; the active one is remembered across restarts. */
-export function createWorkspaces(demoFile: string, practiceDir: string) {
+/** Demo plus one database per practice scenario; the active one is remembered. */
+export function createWorkspaces(backend: WorkspaceBackend) {
   const conns = new Map<string, DB>();
-  const stateFile = join(practiceDir, 'active.json');
-  const fileFor = (id: string) => (id === 'demo' ? demoFile : join(practiceDir, `${id}.db`));
   const valid = (id: string) => id === 'demo' || !!scenarioById(id);
 
   const open = (id: string) => {
     let db = conns.get(id);
     if (db) return db;
-    db = openDb(fileFor(id));
+    db = backend.open(id);
     if (isEmpty(db)) id === 'demo' ? seed(db) : seedScenario(db, scenarioById(id)!);
     conns.set(id, db);
     return db;
   };
 
-  let active = 'demo';
-  try {
-    const saved = JSON.parse(readFileSync(stateFile, 'utf8')).active;
-    if (valid(saved)) active = saved;
-  } catch {
-    // First run: start on the demo.
-  }
-
-  const save = () => {
-    mkdirSync(practiceDir, { recursive: true });
-    writeFileSync(stateFile, JSON.stringify({ active }));
-  };
+  const saved = backend.loadActive();
+  let active = saved && valid(saved) ? saved : 'demo';
 
   return {
     db: () => open(active),
     activeId: () => active,
+    /** Connections opened so far, so the browser backend knows what to save. */
+    open: () => conns,
     activate(id: string) {
       if (!valid(id)) throw new HTTPException(404, { message: `Unknown workspace ${id}` });
       open(id);
       active = id;
-      save();
+      backend.saveActive(id);
     },
     reset(id: string) {
       if (!valid(id)) throw new HTTPException(404, { message: `Unknown workspace ${id}` });
       conns.get(id)?.close();
       conns.delete(id);
-      for (const f of [fileFor(id), `${fileFor(id)}-wal`, `${fileFor(id)}-shm`]) rmSync(f, { force: true });
+      backend.remove(id);
       if (active === id) open(id);
     },
     list() {
       return [
         { id: 'demo', org: getSetting(open('demo'), 'org_name') ?? 'Maple Ridge Credit Union', sector: 'Financial services', demo: true, started: true, active: active === 'demo' },
         ...SCENARIOS.map((s) => {
-          const started = existsSync(fileFor(s.id));
+          const started = conns.has(s.id) || backend.exists(s.id);
           const db = started ? open(s.id) : null;
           const last = db ? getSetting(db, 'last_score') : null;
           return {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import { useWorkspace } from './workspace';
+import { LOCAL_BACKEND } from './api';
 import { Practice } from './pages/Practice';
 import { PracticeBrief } from './pages/PracticeBrief';
 import { PracticeReview } from './pages/PracticeReview';
@@ -75,6 +76,7 @@ export function App() {
         <div className="org">
           <div style={{ color: '#fff', fontWeight: 500 }}>{workspace.org_name}</div>
           <div>{workspace.scenario ? 'Practice scenario' : 'Demo organisation'} · <Link to="/practice" style={{ color: '#7fd6cd' }}>Switch</Link></div>
+          {LOCAL_BACKEND && <div style={{ marginTop: 8, color: '#8a98a6' }}>Your work is private and saved in this browser on this device.</div>}
         </div>
       </aside>
       <div className="main">

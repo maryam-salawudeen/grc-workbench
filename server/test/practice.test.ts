@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { openDb, type DB } from '../src/db.ts';
+import { openDb } from '../src/db-node.ts';
+import type { DB } from '../src/db.ts';
 import { createApp } from '../src/app.ts';
-import { createWorkspaces, normalise, seedScenario, workspaceRoutes } from '../src/practice.ts';
+import { normalise, seedScenario, workspaceRoutes } from '../src/practice.ts';
+import { nodeWorkspaces } from '../src/workspaces-node.ts';
 import { CONTROL_TITLES } from '../src/seed.ts';
 import { SCENARIOS, type Scenario } from '../src/scenarios.ts';
-import { todayISO } from '../../shared/scoring.ts';
 
 const json = (method: string, body: unknown) => ({ method, headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
 
@@ -104,8 +105,8 @@ test('partial answers earn partial credit, and manual matching overrides keyword
 test('workspaces switch, keep separate data and reset', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'grc-'));
   try {
-    const ws = createWorkspaces(join(dir, 'demo.db'), join(dir, 'practice'));
-    const app = createApp(ws.db, todayISO, workspaceRoutes(ws));
+    const ws = nodeWorkspaces(join(dir, 'demo.db'), join(dir, 'practice'));
+    const app = createApp(ws.db, { extend: workspaceRoutes(ws) });
     assert.equal((await (await app.request('/api/workspace')).json()).org_name, 'Maple Ridge Credit Union');
 
     await app.request('/api/workspaces/store/activate', { method: 'POST' });
@@ -128,7 +129,7 @@ test('workspaces switch, keep separate data and reset', async () => {
 
     // The active workspace survives a restart.
     await app.request('/api/workspaces/clinic/activate', { method: 'POST' });
-    const ws2 = createWorkspaces(join(dir, 'demo.db'), join(dir, 'practice'));
+    const ws2 = nodeWorkspaces(join(dir, 'demo.db'), join(dir, 'practice'));
     assert.equal(ws2.activeId(), 'clinic');
   } finally {
     rmSync(dir, { recursive: true, force: true });

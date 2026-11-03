@@ -4,26 +4,10 @@
 import { lookup } from 'node:dns/promises';
 import { isIP } from 'node:net';
 import tls from 'node:tls';
+import { SiteCheckError, type CheckStatus, type Severity, type SiteCheckItem, type SiteReport } from './sitecheck-core.ts';
 
-export type CheckStatus = 'pass' | 'warn' | 'fail' | 'info';
-export type Severity = 'low' | 'medium' | 'high' | 'critical';
-
-export interface SiteCheckItem {
-  id: string;
-  title: string;
-  status: CheckStatus;
-  severity: Severity;
-  found: string;
-  /** Plain-English explanation for a beginner. */
-  explain: string;
-  why: string;
-  fix: string;
-  /** What a GRC analyst would do with this result. */
-  analyst: string;
-  /** Framework requirement refs (ISO first; it is used when raising a finding). */
-  refs: string[];
-  term: string;
-}
+export { SiteCheckError };
+export type { CheckStatus, Severity, SiteCheckItem };
 
 export interface Observations {
   url: string;
@@ -36,7 +20,6 @@ export interface Observations {
 
 // ---- Input and SSRF safety ---------------------------------------------------
 
-export class SiteCheckError extends Error {}
 
 export function normaliseUrl(input: string): URL {
   const raw = input.trim();
@@ -244,13 +227,17 @@ export function analyse(o: Observations): SiteCheckItem[] {
   });
 
   const csp = h['content-security-policy'];
+  // Inline scripts are the danger; inline styles are much lower risk, so only script rules count.
+  const directives = new Map((csp ?? '').split(';').map((d) => d.trim().split(/\s+/)).filter((d) => d[0]).map((d) => [d[0].toLowerCase(), d.slice(1)]));
+  const scriptRule = directives.get('script-src') ?? directives.get('default-src') ?? [];
+  const inlineScripts = scriptRule.includes("'unsafe-inline'");
   add({
     id: 'csp',
     title: 'Content Security Policy limits what the page can load',
     term: 'csp',
-    status: !csp ? 'warn' : /unsafe-inline/.test(csp) && /script-src|default-src/.test(csp) ? 'warn' : 'pass',
+    status: !csp ? 'warn' : inlineScripts ? 'warn' : 'pass',
     severity: 'medium',
-    found: !csp ? 'No Content-Security-Policy header.' : /unsafe-inline/.test(csp) ? 'A Content-Security-Policy is set, but it allows inline scripts (unsafe-inline), which weakens it.' : 'A Content-Security-Policy is set.',
+    found: !csp ? 'No Content-Security-Policy header.' : inlineScripts ? 'A Content-Security-Policy is set, but it allows inline scripts (unsafe-inline), which weakens it.' : 'A Content-Security-Policy is set.',
     explain: 'A Content Security Policy is a list of places the page is allowed to load scripts and content from. Anything else is blocked by the browser.',
     why: 'If an attacker manages to inject a script (for example a card skimmer), CSP can stop it from running or sending data out.',
     fix: 'Start with a report-only policy to see what the site uses, then enforce it. Avoid unsafe-inline for scripts.',
@@ -386,7 +373,7 @@ export function grade(items: SiteCheckItem[]) {
   return { score, letter };
 }
 
-export async function checkSite(input: string) {
+export async function checkSite(input: string): Promise<SiteReport> {
   const o = await observe(input);
   const items = analyse(o);
   return { url: o.url, host: o.host, ...grade(items), items };

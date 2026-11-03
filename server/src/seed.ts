@@ -1,7 +1,6 @@
 // Demo data for a fictional organisation, Maple Ridge Credit Union.
 // Dates are relative to today so the demo always has upcoming and overdue work.
-import { rmSync } from 'node:fs';
-import { logActivity, openDb, setSetting, transaction, type DB } from './db.ts';
+import { logActivity, setSetting, transaction, type DB } from './db.ts';
 import { FRAMEWORKS } from './frameworks.ts';
 import { frameworkCoverage, suggestedResult } from './compliance.ts';
 
@@ -249,17 +248,4 @@ export function seed(db: DB) {
 
 export function isEmpty(db: DB) {
   return (db.prepare('SELECT COUNT(*) AS n FROM frameworks').get() as { n: number }).n === 0;
-}
-
-// `node src/seed.ts --reset` rebuilds the database from scratch.
-if (import.meta.main) {
-  const file = process.env.DB_PATH ?? new URL('../../data/grc.db', import.meta.url).pathname;
-  if (process.argv.includes('--reset')) for (const f of [file, `${file}-wal`, `${file}-shm`]) rmSync(f, { force: true });
-  const db = openDb(file);
-  if (isEmpty(db)) {
-    seed(db);
-    console.log(`Seeded demo data into ${file}`);
-  } else {
-    console.log(`${file} already has data; pass --reset to rebuild it.`);
-  }
 }
