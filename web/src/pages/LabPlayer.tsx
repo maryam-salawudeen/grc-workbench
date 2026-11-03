@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Link, Navigate, useParams } from 'react-router-dom';
-import { CISSP_DOMAINS, LABS, labById, scoreStep, shuffledOrder, type Answer, type Attachment, type Lab, type Step } from '../../../shared/labs/index.ts';
+import { CISSP_DOMAINS, LABS, LAB_TIPS, labById, scoreStep, shuffledOrder, type Answer, type Attachment, type Lab, type Step } from '../../../shared/labs/index.ts';
 import { summarise, useLabProgress, type LabProgress } from '../labProgress';
 import { Explained } from '../components/Explain';
 import { Icon } from '../components/icons';
@@ -56,6 +56,7 @@ function StepCard({ lab, step, index, progress, setProgress }: { lab: Lab; step:
   const answer = progress.answers[index] ?? (step.type === 'order' ? initialOrder : undefined);
   const ticked = progress.ticked[index] ?? [];
   const [showHint, setShowHint] = useState(false);
+  const hint = step.hint ?? LAB_TIPS[lab.id]?.hints[index];
 
   const setAnswer = (a: Answer) => setProgress((p) => ({ ...p, answers: { ...p.answers, [index]: a } }));
   const submit = () => setProgress((p) => ({ ...p, answers: { ...p.answers, [index]: answer as Answer }, submitted: [...new Set([...p.submitted, index])] }));
@@ -200,14 +201,14 @@ function StepCard({ lab, step, index, progress, setProgress }: { lab: Lab; step:
               <button className="btn primary" disabled={!isAnswered(step, answer)} onClick={submit}>
                 {step.type === 'write' ? 'Submit and see a model answer' : 'Submit'}
               </button>
-              {step.hint && <button className="btn ghost sm" onClick={() => setShowHint((h) => !h)}>{showHint ? 'Hide hint' : 'Hint'}</button>}
+              {hint && <button className="btn ghost sm" onClick={() => setShowHint((h) => !h)}>{showHint ? 'Hide hint' : 'Hint'}</button>}
             </>
           ) : (
             <button className="btn ghost sm" onClick={redo}>Try this step again</button>
           )}
           {step.type === 'write' && !submitted && <span className="small muted">At least a couple of sentences.</span>}
         </div>
-        {showHint && !submitted && step.hint && <p className="small callout">{step.hint}</p>}
+        {showHint && !submitted && hint && <p className="small callout lab-hint"><b>Hint.</b> <Explained text={hint} /></p>}
       </div>
     </div>
   );
@@ -265,7 +266,12 @@ export function LabPlayer() {
         </div>
 
         <div className="lab-work grid" style={{ gap: 14 }}>
-          <div className="small muted">Your deliverable: work through each step. You get feedback as soon as you submit, and you can retry any step.</div>
+          {LAB_TIPS[lab.id] && (
+            <div className="callout lab-before">
+              <b>Before you start.</b> <Explained text={LAB_TIPS[lab.id].before} />
+            </div>
+          )}
+          <div className="small muted">Your deliverable: work through each step. You get feedback as soon as you submit, and you can retry any step. Stuck? Each step has a hint that points you in the right direction without giving the answer away.</div>
           {lab.steps.map((s, i) => (
             <StepCard key={i} lab={lab} step={s} index={i} progress={progress} setProgress={update} />
           ))}

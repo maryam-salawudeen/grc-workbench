@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { LABS, scoreStep, shuffledOrder, type Answer, type Step } from '../../shared/labs/index.ts';
+import { LABS, LAB_TIPS, scoreStep, shuffledOrder, type Answer, type Step } from '../../shared/labs/index.ts';
 
 /** The best possible answer for a step. */
 function perfect(step: Step): { answer: Answer; ticked?: number[] } {
@@ -78,5 +78,15 @@ test('order steps start shuffled, the same way each visit', () => {
 test('lab text follows the house style: no em or en dashes', () => {
   for (const lab of LABS) {
     for (const t of allText(lab)) assert.ok(!/[—–]/.test(t), `${lab.id}: dash in "${t.slice(0, 60)}"`);
+  }
+});
+
+test('every lab has a before-you-start tip and one hint per step', () => {
+  assert.deepEqual(Object.keys(LAB_TIPS).sort(), LABS.map((l) => l.id).sort());
+  for (const lab of LABS) {
+    const tips = LAB_TIPS[lab.id];
+    assert.ok(tips.before.length > 40, `${lab.id}: before tip too short`);
+    assert.equal(tips.hints.length, lab.steps.length, `${lab.id}: hint count`);
+    for (const t of [tips.before, ...tips.hints]) assert.ok(!/[—–]/.test(t), `${lab.id}: dash in "${t.slice(0, 60)}"`);
   }
 });

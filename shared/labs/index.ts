@@ -8,6 +8,7 @@ import type { Lab, Level } from './types.ts';
 
 export * from './types.ts';
 export { scoreStep, shuffledOrder } from './scoring.ts';
+export { LAB_TIPS, type LabTips } from './tips.ts';
 
 export const LEVELS: Level[] = ['Easy', 'Medium', 'Hard'];
 
