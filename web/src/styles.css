@@ -151,6 +151,8 @@ p { margin: 0; }
   position: sticky;
   top: 0;
   height: 100vh;
+  /* Phone browsers count the area under their own toolbars in 100vh; dvh does not. */
+  height: 100dvh;
   overflow-y: auto;
   border-right: 1px solid var(--nav-line);
 }
@@ -662,3 +664,11 @@ body:has(.modal) .brief-fab { display: inline-flex; }
 
 @media (min-width: 901px) { .sidebar { overflow: visible; } }
 .theme-pop { width: 238px; }
+
+@media (max-width: 900px) {
+  .sidebar { padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .mobile-bar { padding-top: calc(12px + env(safe-area-inset-top)); }
+}
+.theme-pop.down { bottom: auto; top: calc(100% + 8px); left: auto; right: 0; }
+.theme-icon-button { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid var(--nav-line); background: transparent; color: var(--nav-strong); cursor: pointer; }
+.theme-icon-button svg { width: 18px; height: 18px; }

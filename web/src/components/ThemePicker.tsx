@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { Icon } from './icons';
 
 export type Mode = 'light' | 'dark' | 'system';
 export const ACCENTS: [id: string, label: string, swatch: string][] = [
@@ -30,11 +31,22 @@ function save(key: string, value: string) {
   window.dispatchEvent(new Event('grc-theme'));
 }
 
-export function ThemePicker() {
+/** `compact` shows an icon button (phone top bar) whose menu opens downwards. */
+export function ThemePicker({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(() => read('grc-theme-mode', 'system') as Mode);
   const [accent, setAccent] = useState(() => read('grc-theme-accent', 'teal'));
   const ref = useRef<HTMLDivElement>(null);
+
+  // The top-bar picker and the sidebar picker stay in step with each other.
+  useEffect(() => {
+    const sync = () => {
+      setMode(read('grc-theme-mode', 'system') as Mode);
+      setAccent(read('grc-theme-accent', 'teal'));
+    };
+    window.addEventListener('grc-theme', sync);
+    return () => window.removeEventListener('grc-theme', sync);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -51,12 +63,18 @@ export function ThemePicker() {
 
   return (
     <div className="theme-picker" ref={ref}>
-      <button type="button" className="nav-sync small theme-button" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
-        <span className="theme-dot" style={{ background: ACCENTS.find((a) => a[0] === accent)?.[2] }} aria-hidden="true" />
-        Theme
-      </button>
+      {compact ? (
+        <button type="button" className="theme-icon-button" aria-label="Theme" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <Icon name="palette" />
+        </button>
+      ) : (
+        <button type="button" className="nav-sync small theme-button" aria-expanded={open} onClick={() => setOpen((o) => !o)}>
+          <span className="theme-dot" style={{ background: ACCENTS.find((a) => a[0] === accent)?.[2] }} aria-hidden="true" />
+          Theme
+        </button>
+      )}
       {open && (
-        <div className="theme-pop" role="dialog" aria-label="Choose a theme">
+        <div className={`theme-pop ${compact ? 'down' : ''}`} role="dialog" aria-label="Choose a theme">
           <div className="small theme-label">Appearance</div>
           <div className="tabs" role="radiogroup" aria-label="Appearance">
             {(['light', 'dark', 'system'] as Mode[]).map((m) => (

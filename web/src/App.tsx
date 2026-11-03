@@ -135,6 +135,9 @@ export function App() {
             <Icon name="menu" size={22} />
           </button>
           <strong>GRC Workbench</strong>
+          <span style={{ marginLeft: 'auto' }}>
+            <ThemePicker compact />
+          </span>
         </div>
         {workspace.scenario && (
           <div className="practice-bar">
