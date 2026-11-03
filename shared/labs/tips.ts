@@ -19,12 +19,12 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'phishing-results': {
-    before: 'A phishing test sends a fake scam email to see how staff react. The numbers tell you where to focus, but the goal is behaviour: people who spot a scam and report it quickly. Shame drives the opposite.',
+    before: 'A phishing test sends a fake scam email to see how staff react. The numbers show where to focus. What you want in the end is people who spot a scam and report it quickly, and people stop reporting when they expect to be blamed.',
     hints: [
       'Use the Total row: clicks divided by staff, then times 100.',
       'Same method, using the "Entered a password" column.',
       'Which behaviour helps you stop a real attack early, for everyone?',
-      'Some of these help people learn; some just make people hide mistakes. Three people gave away passwords: what technical control limits that damage?',
+      'Ask which options help people learn and which would make them hide mistakes. Three people gave away passwords, so also think about a technical control that limits the damage.',
       'Acknowledge his concern, explain the effect naming people has on reporting, then offer a better alternative.',
     ],
   },
@@ -47,9 +47,9 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'privacy-misdirected': {
-    before: 'Most privacy breaches are honest mistakes. The usual order is contain, record the facts, tell the privacy lead, assess, notify and then fix the cause. Fast reporting by staff is what makes containment possible.',
+    before: 'Most privacy breaches are honest mistakes, like an email sent to the wrong person. The first job is to limit the harm, and that only works when staff report quickly. Notifying people and fixing the cause come later.',
     hints: [
-      'Stop the harm first, then make sure the right people know, then deal with notification and prevention.',
+      'Which step stops more harm the sooner you do it? Start there.',
       'Read the PHIPA line in the procedure. Does deleting the email undo the disclosure?',
       'Think of the three core properties: confidentiality, integrity and availability. Which one did this break?',
       'Look for changes to the process or the tools. Consider what punishing someone for reporting would teach other staff.',
@@ -65,9 +65,9 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'password-guidance': {
-    before: 'Current guidance, such as NIST SP 800-63B, focuses on long passphrases, blocking known breached passwords and multi-factor authentication. Complexity rules and scheduled changes make passwords more predictable, not stronger.',
+    before: 'Current guidance, such as NIST SP 800-63B, favours long passphrases, blocking passwords already known from breaches, and multi-factor authentication. Rules like "one capital, one symbol, change every 90 days" tend to push people towards predictable patterns.',
     hints: [
-      'Ask whether each change makes passwords harder to guess or just harder to remember.',
+      'For each change, ask whether it makes passwords harder for an attacker to guess or only harder for staff to remember.',
       'Which control still protects the account when the password is stolen?',
       'Cover length, unique passwords, when to change one, and MFA, in words staff will follow.',
     ],
@@ -81,15 +81,15 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'awareness-plan': {
-    before: 'Good awareness programmes are short, frequent and tailored to each role, and they are measured. Match the topic to the people who face that risk in their daily work.',
+    before: 'People remember short, regular sessions better than one long annual course. Match each topic to the people who face that risk in their daily work, and decide up front how you will tell whether it worked.',
     hints: [
       'Think about each group\'s daily tasks. Who handles patient requests, who takes devices home, who makes breach decisions?',
       'How much do people remember from a once-a-year session, and how much time do clinic staff have?',
-      'Look for measures that show behaviour or outcomes changing, not just activity.',
+      'Counting who attended tells you little. Look for measures that show people acting differently.',
     ],
   },
   'vendor-offboarding': {
-    before: 'Ending a vendor relationship is like a staff leaver, but with more places to look. Find all their access, remove it, change any shared secrets they knew, and get your data back or destroyed.',
+    before: 'Ending a vendor relationship is like handling a staff leaver, with more places to look. Their access may sit in several systems, they may know shared passwords, and they may still hold your data.',
     hints: [
       'You can only remove what you know about. What comes before any removal?',
       'The data is your customers\'. What proof would you keep for an auditor or regulator?',
@@ -129,7 +129,7 @@ export const LAB_TIPS: Record<string, LabTips> = {
     before: 'Triage decides how serious an alert is and what happens first. Use the organisation\'s severity matrix, verify quickly through a trusted channel, then contain the threat before investigating in depth.',
     hints: [
       'Check the matrix: what kind of account is this, and is there a sign of compromise?',
-      'Verify, contain, preserve evidence, investigate, recover, then write it up.',
+      'Ask what would make things worse if it waited. Confirming the alert is real comes before anything drastic, and the write-up comes last.',
       'Which phase is about limiting damage while you investigate?',
       'Notification decisions need people with legal and compliance authority.',
       'The attacker got past MFA. Which changes address how this happened and limit what a stolen login can do?',
@@ -178,7 +178,7 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'vuln-priorities': {
-    before: 'A CVSS score measures how severe a flaw is, not how risky it is for you. Combine severity with exposure to the internet, signs of active exploitation and what the system does.',
+    before: 'A CVSS score rates how bad a flaw is in general. Your own risk also depends on whether the system faces the internet, whether attackers are already using the flaw, and what the system does for the business.',
     hints: [
       'Rank by internet exposure, active exploitation and impact on people. A score alone can mislead.',
       'Some serious weaknesses are configuration problems that have no CVE number.',
@@ -219,7 +219,7 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'cloud-posture': {
-    before: 'Cloud posture tools flag risky settings. Rank them for your business: what data is involved, whether it is reachable from the internet, and how much an attacker could do with it.',
+    before: 'Cloud posture tools flag risky settings, often dozens at once. Rank them by what data is involved and whether someone on the internet could reach it today.',
     hints: [
       'Start with anything that may be exposing data right now, then powerful accounts, then open admin access.',
       'Closing the bucket stops future access. What about the time it was open?',
@@ -227,7 +227,7 @@ export const LAB_TIPS: Record<string, LabTips> = {
     ],
   },
   'dpia-location': {
-    before: 'A privacy impact assessment checks a new use of personal data before it is built. Test every data point against the stated purpose: collect only what is needed, keep it only as long as needed, and use it only for that purpose.',
+    before: 'A privacy impact assessment looks at a new use of personal data before it is built. Check each piece of data against the stated purpose. If the purpose works without it, it probably should not be collected.',
     hints: [
       'The purpose is checking a payment\'s location. What goes beyond that?',
       'Look for the option that still meets the fraud purpose with the least data.',
@@ -249,11 +249,11 @@ export const LAB_TIPS: Record<string, LabTips> = {
       'The RTO must leave room inside the MTD. When do the penalties start?',
       'How many hours of orders can the team re-key by hand?',
       'Compare the backup frequency with the RPO, and the restore time with the RTO.',
-      'Look for changes that meet the targets. Changing the targets to fit the system does not count.',
+      'Look for changes to the systems that meet the targets as they stand.',
     ],
   },
   'leaver-control-test': {
-    before: 'Control testing checks whether a control worked across a sample. Record every exception, calculate the rate and conclude honestly. Findings follow the structure condition, criteria, cause, effect and recommendation.',
+    before: 'Control testing checks whether a control worked across a sample. You note every exception and work out the rate before you decide whether the control can be relied on. Findings are written as condition, criteria, cause, effect and recommendation.',
     hints: [
       'Count business days only. Friday to Monday is one business day.',
       'Exceptions divided by sample size, times 100.',

@@ -271,7 +271,7 @@ export function LabPlayer() {
               <b>Before you start.</b> <Explained text={LAB_TIPS[lab.id].before} />
             </div>
           )}
-          <div className="small muted">Your deliverable: work through each step. You get feedback as soon as you submit, and you can retry any step. Stuck? Each step has a hint that points you in the right direction without giving the answer away.</div>
+          <div className="small muted">Work through the steps in order. Each one has a hint if you get stuck, and you can retry any step.</div>
           {lab.steps.map((s, i) => (
             <StepCard key={i} lab={lab} step={s} index={i} progress={progress} setProgress={update} />
           ))}

@@ -677,3 +677,7 @@ body:has(.modal) .brief-fab { display: inline-flex; }
 .badge.level-easy { background: var(--low-soft); color: var(--low); }
 .badge.level-medium { background: var(--medium-soft); color: var(--medium); }
 .badge.level-hard { background: var(--critical-soft); color: var(--critical); }
+
+/* Hints sit quietly under the step so they don't compete with the question. */
+.lab-hint { background: transparent; border-left: 3px solid var(--accent); border-radius: 0; padding: 4px 0 4px 12px; margin: 0; }
+.lab-before { line-height: 1.55; }
