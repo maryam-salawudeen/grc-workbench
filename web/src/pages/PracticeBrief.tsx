@@ -4,6 +4,7 @@ import { api, type Row } from '../api';
 import { useWorkspace } from '../workspace';
 import { Loading, PageHeader, toast } from '../components/ui';
 import { Difficulty } from './Practice';
+import { Explained } from '../components/Explain';
 
 function useChecklist(key: string, size: number) {
   const storageKey = `grc-tasks-${key}`;
@@ -72,7 +73,7 @@ function Brief({ s }: { s: Row }) {
           {s.brief.map((section: { heading: string; body: string[] }) => (
             <section key={section.heading}>
               <h2>{section.heading}</h2>
-              {section.body.map((p, i) => <p key={i}>{p}</p>)}
+              {section.body.map((p, i) => <p key={i}><Explained text={p} /></p>)}
             </section>
           ))}
         </div>
@@ -86,7 +87,7 @@ function Brief({ s }: { s: Row }) {
               {s.tasks.map((t: string, i: number) => (
                 <label key={i} className={`task ${done[i] ? 'done' : ''}`}>
                   <input type="checkbox" checked={done[i]} onChange={() => toggle(i)} />
-                  <span>{t}</span>
+                  <span><Explained text={t} /></span>
                 </label>
               ))}
             </div>

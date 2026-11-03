@@ -4,6 +4,7 @@ import { RISK_APPETITE } from '../../../shared/scoring.ts';
 import { fmtCompact, fmtDate, humanize, useApi, type Row } from '../api';
 import { HeatMap, cellOf, type HeatMode } from '../components/HeatMap';
 import { useWorkspace } from '../workspace';
+import { Explained } from '../components/Explain';
 import { CoverageBar, LevelBadge, Loading, PageHeader, Ring, Score, StatusBadge, complianceColor } from '../components/ui';
 
 export function Dashboard() {
@@ -31,32 +32,32 @@ export function Dashboard() {
 
       <div className="kpis">
         <Link to="/risks" className="card kpi">
-          <div className="label">Active risks</div>
+          <div className="label"><Explained text="Active risks" /></div>
           <div className="value">{data.riskCounts.open}</div>
           <div className="sub"><b style={{ color: 'var(--critical)' }}>{data.riskCounts.aboveAppetite}</b> above appetite (&gt; {RISK_APPETITE})</div>
         </Link>
         <Link to="/frameworks" className="card kpi">
-          <div className="label">Average compliance</div>
+          <div className="label"><Explained text="Average compliance" /></div>
           <div className="value" style={{ color: complianceColor(overall) }}>{Math.round(overall)}%</div>
           <div className="sub">across {data.frameworks.length} frameworks</div>
         </Link>
         <Link to="/findings" className="card kpi">
-          <div className="label">Open findings</div>
+          <div className="label"><Explained text="Open findings" /></div>
           <div className="value">{data.findings.open}</div>
           <div className="sub"><b style={{ color: data.findings.overdue ? 'var(--critical)' : undefined }}>{data.findings.overdue}</b> overdue</div>
         </Link>
         <Link to="/controls" className="card kpi">
-          <div className="label">Controls implemented</div>
+          <div className="label"><Explained text="Controls implemented" /></div>
           <div className="value">{data.controls.implemented}<span className="muted" style={{ fontSize: 16 }}>/{data.controls.total}</span></div>
           <div className="sub"><b>{data.controls.testsOverdue}</b> tests overdue or never run</div>
         </Link>
         <Link to="/policies" className="card kpi">
-          <div className="label">Policy reviews</div>
+          <div className="label"><Explained text="Policy reviews" /></div>
           <div className="value">{data.policies.overdue + data.policies.dueSoon}</div>
           <div className="sub"><b style={{ color: data.policies.overdue ? 'var(--critical)' : undefined }}>{data.policies.overdue}</b> overdue · {data.policies.dueSoon} due in 30 days</div>
         </Link>
         <Link to="/vendors" className="card kpi">
-          <div className="label">Vendors needing review</div>
+          <div className="label"><Explained text="Vendors needing review" /></div>
           <div className="value">{data.vendors.overdue}</div>
           <div className="sub">{data.vendors.tier1} Tier 1 of {data.vendors.total} vendors</div>
         </Link>
@@ -66,7 +67,7 @@ export function Dashboard() {
         <div className="card">
           <div className="card-head">
             <div>
-              <h2>Risk heat map</h2>
+              <h2><Explained text="Risk heat map" /></h2>
               <div className="small muted">Annualised loss expectancy of active risks: {fmtCompact(data.riskCounts.ale)}</div>
             </div>
             <div className="tabs">

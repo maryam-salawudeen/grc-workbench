@@ -1,4 +1,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
+import { useLocation } from 'react-router-dom';
+import { guideFor } from '../guides';
+import { Explained } from './Explain';
 import { riskLevel, type Level } from '../../../shared/scoring.ts';
 import { humanize } from '../api';
 import { Icon } from './icons';
@@ -48,14 +51,51 @@ export function Score({ value, title }: { value: number; title?: string }) {
 
 export function PageHeader({ title, description, crumbs, actions }: { title: ReactNode; description?: ReactNode; crumbs?: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="page-header">
-      <div>
-        {crumbs && <div className="crumbs">{crumbs}</div>}
-        <h1>{title}</h1>
-        {description && <p>{description}</p>}
+    <>
+      <div className="page-header">
+        <div>
+          {crumbs && <div className="crumbs">{crumbs}</div>}
+          <h1><Explained text={title} /></h1>
+          {description && <p><Explained text={description} /></p>}
+        </div>
+        {actions && <div className="actions">{actions}</div>}
       </div>
-      {actions && <div className="actions">{actions}</div>}
-    </div>
+      <PageGuide />
+    </>
+  );
+}
+
+/** "How to use this page" for beginners. Open until the reader closes it once. */
+function PageGuide() {
+  const { pathname } = useLocation();
+  const guide = guideFor(pathname);
+  const key = `grc-guide-closed-${pathname.replace(/\/\d+$/, '/:id')}`;
+  const [open, setOpen] = useState(() => {
+    try {
+      return localStorage.getItem(key) !== '1';
+    } catch {
+      return true;
+    }
+  });
+  if (!guide) return null;
+  const toggle = (next: boolean) => {
+    setOpen(next);
+    try {
+      if (next) localStorage.removeItem(key);
+      else localStorage.setItem(key, '1');
+    } catch {
+      // ignore
+    }
+  };
+  return (
+    <details className="page-guide" open={open} onToggle={(e) => toggle((e.target as HTMLDetailsElement).open)}>
+      <summary>New here? How to use this page</summary>
+      <p><Explained text={guide.what} /></p>
+      <ol>
+        {guide.steps.map((s, i) => <li key={i}><Explained text={s} /></li>)}
+      </ol>
+      {guide.tip && <p className="small"><b>Tip.</b> <Explained text={guide.tip} /></p>}
+    </details>
   );
 }
 

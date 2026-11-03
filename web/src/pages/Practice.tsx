@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { api, fmtDate, useApi, type Row } from '../api';
 import { switchWorkspace } from '../workspace';
 import { Loading, PageHeader, toast } from '../components/ui';
+import { Explained } from '../components/Explain';
 
 export function Difficulty({ level }: { level: number }) {
   return (
@@ -52,7 +53,7 @@ export function Practice() {
                 <div className="small muted" style={{ marginTop: 4 }}>{w.level} · ~{w.minutes} min</div>
               </div>
             </div>
-            <p className="small">{w.summary}</p>
+            <p className="small"><Explained text={w.summary} /></p>
             <div className="chips">
               {w.focus.map((f: string) => <span key={f} className="badge accent" style={{ margin: '0 6px 6px 0' }}>{f}</span>)}
             </div>

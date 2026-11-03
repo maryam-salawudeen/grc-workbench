@@ -4,6 +4,9 @@ import { useWorkspace } from './workspace';
 import { Practice } from './pages/Practice';
 import { PracticeBrief } from './pages/PracticeBrief';
 import { PracticeReview } from './pages/PracticeReview';
+import { Glossary } from './pages/Glossary';
+import { WebsiteCheck } from './pages/WebsiteCheck';
+import { ExplainToggle } from './components/Explain';
 import { Icon } from './components/icons';
 import { Toaster } from './components/ui';
 import { Dashboard } from './pages/Dashboard';
@@ -26,10 +29,11 @@ const NAV: { group: string; items: [to: string, label: string, icon: string][] }
       ['/frameworks', 'Frameworks', 'framework'],
       ['/assessments', 'Assessments', 'assessment'],
       ['/findings', 'Findings', 'finding'],
+      ['/website-check', 'Website check', 'globe'],
     ],
   },
   { group: 'Governance', items: [['/policies', 'Policies', 'policy'], ['/vendors', 'Vendors', 'vendor'], ['/people', 'People', 'people']] },
-  { group: 'Learn', items: [['/practice', 'Practice scenarios', 'assessment'], ['/lab', 'Risk lab', 'learn']] },
+  { group: 'Learn', items: [['/practice', 'Practice scenarios', 'assessment'], ['/lab', 'Risk lab', 'learn'], ['/glossary', 'Glossary', 'book']] },
 ];
 
 export function App() {
@@ -54,6 +58,9 @@ export function App() {
             <small>Risk & compliance</small>
           </div>
         </div>
+        <div style={{ padding: '0 10px 14px' }}>
+          <ExplainToggle />
+        </div>
         {NAV.map((g) => (
           <div className="nav-group" key={g.group}>
             <span>{g.group}</span>
@@ -76,6 +83,7 @@ export function App() {
             <Icon name="menu" size={22} />
           </button>
           <strong>GRC Workbench</strong>
+          <span style={{ marginLeft: 'auto' }}><ExplainToggle compact /></span>
         </div>
         {workspace.scenario && (
           <div className="practice-bar">
@@ -104,6 +112,8 @@ export function App() {
           <Route path="/people" element={<People />} />
           <Route path="/lab" element={<RiskLab />} />
           <Route path="/practice" element={<Practice />} />
+          <Route path="/glossary" element={<Glossary />} />
+          <Route path="/website-check" element={<WebsiteCheck />} />
           <Route path="/practice/brief" element={<PracticeBrief />} />
           <Route path="/practice/review" element={<PracticeReview />} />
           <Route path="*" element={<div className="page"><h1>Page not found</h1></div>} />

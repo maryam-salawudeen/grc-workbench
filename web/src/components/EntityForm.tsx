@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ReactNode } from 'react';
 import { ApiError, type Row } from '../api';
 import { useLookups } from '../lookups';
 import { IMPACT_LABELS, LIKELIHOOD_LABELS } from '../../../shared/scoring.ts';
+import { Explained } from './Explain';
 
 export type FieldType = 'text' | 'textarea' | 'number' | 'select' | 'date' | 'person' | 'asset' | 'risk' | 'framework' | 'checkbox' | 'likelihood' | 'impact' | 'scale' | 'section';
 
@@ -163,8 +164,8 @@ export function EntityForm({
           if (f.type === 'section')
             return (
               <div key={f.name} className="form-section">
-                <h3>{f.label}</h3>
-                {f.help && <p className="small muted" style={{ marginTop: 4 }}>{f.help}</p>}
+                <h3><Explained text={f.label} /></h3>
+                {f.help && <div className="small muted" style={{ marginTop: 4 }}><Explained text={f.help} /></div>}
               </div>
             );
           const err = fieldError(f.name);
@@ -172,18 +173,18 @@ export function EntityForm({
             <div key={f.name} className={`field ${f.full || f.type === 'textarea' ? 'full' : ''} ${f.type === 'checkbox' ? 'check' : ''}`}>
               {f.type === 'checkbox' ? (
                 <label htmlFor={`f-${f.name}`}>
-                  {input(f)} {f.label}
+                  {input(f)} <Explained text={f.label} />
                 </label>
               ) : (
                 <>
                   <label htmlFor={`f-${f.name}`}>
-                    {f.label}
+                    <Explained text={f.label} />
                     {f.required && <span className="faint"> *</span>}
                   </label>
                   {input(f)}
                 </>
               )}
-              {err ? <div className="help" style={{ color: 'var(--critical)' }}>{err}</div> : f.help && <div className="help">{f.help}</div>}
+              {err ? <div className="help" style={{ color: 'var(--critical)' }}>{err}</div> : f.help && <div className="help"><Explained text={f.help} /></div>}
             </div>
           );
         })}

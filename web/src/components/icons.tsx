@@ -17,6 +17,8 @@ const paths: Record<string, string> = {
   close: 'M6 6l12 12M18 6 6 18',
   activity: 'M3 12h4l3 8 4-16 3 8h4',
   arrow: 'M5 12h14M13 6l6 6-6 6',
+  globe: 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c2.5 2.7 3.8 5.7 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-5.7-3.8-9S9.5 5.7 12 3z',
+  book: 'M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2zM4 5v16M8 7h7'
 };
 
 export function Icon({ name, size }: { name: keyof typeof paths | string; size?: number }) {

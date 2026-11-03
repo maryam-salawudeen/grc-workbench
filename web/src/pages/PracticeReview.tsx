@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom';
 import { api, fmtMoney, humanize, useApi, type Row } from '../api';
 import { useWorkspace } from '../workspace';
 import { Loading, PageHeader, Ring, Score, complianceColor, toast } from '../components/ui';
+import { Explained, Term } from '../components/Explain';
 
 const verdict = (v: number) => (v >= 0.99 ? ['good', 'Spot on'] : v >= 0.5 ? ['close', 'Close'] : ['off', 'Off']);
 
@@ -55,25 +56,25 @@ function ResultCard({ r, userRisks, onMatch }: { r: Row; userRisks: Row[]; onMat
               </thead>
               <tbody>
                 <tr>
-                  <td className="muted">Inherent</td>
+                  <td className="muted"><Term id="inherent">Inherent</Term></td>
                   <td>{u ? <><Score value={u.inherent} /> <span className="small muted">L{u.likelihood} × I{u.impact}</span></> : '—'}</td>
                   <td><Score value={m.inherent} /> <span className="small muted">L{m.likelihood} × I{m.impact}</span></td>
                   <td><Verdict value={r.scores.inherent} show={!!u} /></td>
                 </tr>
                 <tr>
-                  <td className="muted">Residual</td>
+                  <td className="muted"><Term id="residual">Residual</Term></td>
                   <td>{u ? (u.residual_assessed ? <><Score value={u.residual} /> <span className="small muted">L{u.residual_likelihood} × I{u.residual_impact}</span></> : <span className="faint">Not scored</span>) : '—'}</td>
                   <td><Score value={m.residual} /> <span className="small muted">L{m.residual_likelihood} × I{m.residual_impact}</span></td>
                   <td><Verdict value={r.scores.residual} show={!!u} /></td>
                 </tr>
                 <tr>
-                  <td className="muted">Treatment</td>
+                  <td className="muted"><Term id="treatment">Treatment</Term></td>
                   <td>{u ? humanize(u.treatment) : '—'}</td>
                   <td>{humanize(m.treatment)}{m.alsoAccept.length ? <span className="small muted"> (or {m.alsoAccept.join(', ')})</span> : ''}</td>
                   <td><Verdict value={r.scores.treatment} show={!!u} /></td>
                 </tr>
                 <tr>
-                  <td className="muted">Controls</td>
+                  <td className="muted"><Term id="control">Controls</Term></td>
                   <td className="small">
                     {u ? (u.controls.length ? u.controls.map((c: string) => <div key={c}>{m.controls.includes(c) ? '✓' : '·'} {c}</div>) : <span className="faint">None linked</span>) : '—'}
                   </td>
@@ -82,7 +83,7 @@ function ResultCard({ r, userRisks, onMatch }: { r: Row; userRisks: Row[]; onMat
                 </tr>
                 {m.ale != null && (
                   <tr>
-                    <td className="muted">ALE</td>
+                    <td className="muted"><Term id="ale">ALE</Term></td>
                     <td>{u ? fmtMoney(u.ale) : '—'}</td>
                     <td className="small">
                       {fmtMoney(m.ale)} <span className="muted">(AV {fmtMoney(m.quant.asset_value)} × EF {m.quant.exposure_factor}% × ARO {m.quant.aro})</span>
@@ -97,9 +98,9 @@ function ResultCard({ r, userRisks, onMatch }: { r: Row; userRisks: Row[]; onMat
             <p className="small"><b>Controls to consider linking:</b> {r.missingControls.join(', ')}.</p>
           )}
           <div className="why callout">
-            <p><b>Scoring.</b> {r.why.scoring}</p>
-            <p><b>Treatment.</b> {r.why.treatment}</p>
-            <p><b>Controls.</b> {r.why.controls}</p>
+            <p><b>Scoring.</b> <Explained text={r.why.scoring} /></p>
+            <p><b>Treatment.</b> <Explained text={r.why.treatment} /></p>
+            <p><b>Controls.</b> <Explained text={r.why.controls} /></p>
           </div>
         </div>
       )}

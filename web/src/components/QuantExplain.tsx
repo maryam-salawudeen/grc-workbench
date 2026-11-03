@@ -1,5 +1,6 @@
 import { quantitative } from '../../../shared/scoring.ts';
 import { fmtMoney } from '../api';
+import { Term } from './Explain';
 
 /** "0.2" → "about once every 5 years", "3" → "about 3 times a year". */
 export function aroInWords(aro: number): string {
@@ -66,7 +67,7 @@ export function QuantGuide({ open = false }: { open?: boolean }) {
         {TERMS.map((t) => (
           <li key={t.abbr}>
             <div>
-              <b className="mono">{t.abbr}</b> · <b>{t.name}</b>
+              <b className="mono"><Term id={t.abbr.toLowerCase()}>{t.abbr}</Term></b> · <b>{t.name}</b>
               {(t.abbr === 'SLE' || t.abbr === 'ALE') && <span className="badge accent" style={{ marginLeft: 8 }}>calculated</span>}
             </div>
             <div className="small">{t.plain}</div>
@@ -96,7 +97,7 @@ export function QuantWorking({ av, ef, aro, title = 'How this is calculated' }: 
         <tbody>
           {rows.map(([abbr, name, value, meaning]) => (
             <tr key={abbr} className={abbr === 'SLE' || abbr === 'ALE' ? 'calc' : ''}>
-              <td className="mono" title={name}><b>{abbr}</b></td>
+              <td className="mono" title={name}><b><Term id={abbr.toLowerCase()}>{abbr}</Term></b></td>
               <td>
                 <div className="num"><b>{value}</b></div>
                 <div className="small muted">{name}: {meaning}</div>

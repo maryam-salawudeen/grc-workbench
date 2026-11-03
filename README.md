@@ -18,6 +18,8 @@ Built as a portfolio project and a CISSP / GRC study aid: every score in the app
 | **Policies** | Version, approval and review cycle with due-soon / overdue flags |
 | **Vendors** | Inherent tiering from data access, criticality and system access; reassessment schedule by tier |
 | **Practice scenarios** | Five fictional organisations (clinic, online store, municipality, logistics company, fintech) from foundation to expert. Each has a brief, an empty register, and "Check my work", which compares your risks with a model answer and explains every score |
+| **Website check** | Enter a URL for a passive review of HTTPS, the TLS certificate, security headers, cookie flags, version leaks and security.txt. Every result explains what it means, why it matters, how to fix it and what an analyst does next; problems can be raised as findings mapped to ISO 27001. Private and internal addresses are refused |
+| **Explain mode and glossary** | Jargon across the app is underlined: click any term for a plain-English explanation written for people new to GRC. Every page has a "How to use this page" guide, and the glossary lists 110+ terms |
 | **Risk lab** | Quantitative calculator (AV, EF, SLE, ARO, ALE, safeguard value), qualitative matrix, practice questions and a glossary |
 
 ### Scoring rules
@@ -54,8 +56,11 @@ grc-platform/
 │   ├── src/seed.ts       Demo organisation (dates relative to today)
 │   ├── src/scenarios.ts  Five practice scenarios with briefs and model answers
 │   ├── src/practice.ts   Workspaces (one database per scenario) and the review
+│   ├── src/sitecheck.ts  Passive website check with SSRF protection
 │   └── test/             node:test suites for scoring and the API
 └── web/                  React 19 + Vite + React Router, plain CSS with light/dark themes
+    ├── src/glossary.ts   Beginner explanations behind Explain mode
+    └── src/guides.ts     Step-by-step "How to use this page" guides
 ```
 
 - **No database server and no native modules**: SQLite is built into Node (`node:sqlite`), and Node runs the TypeScript directly.

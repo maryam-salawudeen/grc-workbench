@@ -171,6 +171,16 @@ CREATE TABLE IF NOT EXISTS practice_matches (
   risk_id INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS site_checks (
+  id INTEGER PRIMARY KEY,
+  url TEXT NOT NULL,
+  host TEXT NOT NULL,
+  checked_at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),
+  score INTEGER NOT NULL,
+  grade TEXT NOT NULL,
+  items TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS activity (
   id INTEGER PRIMARY KEY,
   at TEXT NOT NULL DEFAULT (datetime('now', 'localtime')),

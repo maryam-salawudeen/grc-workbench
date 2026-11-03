@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { getSetting, logActivity, transaction, type DB } from './db.ts';
 import { publicScenario, reviewScenario } from './practice.ts';
 import { scenarioById } from './scenarios.ts';
+import { SiteCheckError, checkSite, type SiteCheckItem } from './sitecheck.ts';
 import { ENTITIES, isOpenFinding, type Entity, type Row } from './entities.ts';
 import { domainBreakdown, frameworkCoverage, frameworkSummaries, suggestedResult, summarise } from './compliance.ts';
 import { daysBetween, todayISO } from '../../shared/scoring.ts';
@@ -299,6 +300,55 @@ export function createApp(source: DB | (() => DB), today: () => string = todayIS
       });
     }
     return c.json({ ok: true });
+  });
+
+  // ---- Website check ------------------------------------------------------------
+
+  const siteCheckRow = (id: number) => {
+    const row = db().prepare('SELECT * FROM site_checks WHERE id = ?').get(id) as Row | undefined;
+    if (!row) throw new HTTPException(404, { message: 'Website check not found' });
+    return { ...row, host: row.host as string, items: JSON.parse(row.items) as SiteCheckItem[] };
+  };
+
+  api.get('/site-checks', (c) => c.json(db().prepare('SELECT id, url, host, checked_at, score, grade FROM site_checks ORDER BY id DESC LIMIT 50').all()));
+
+  api.get('/site-checks/:id', (c) => c.json(siteCheckRow(idParam(c.req.param('id')))));
+
+  api.post('/site-checks', async (c) => {
+    const { url, permission } = z.object({ url: z.string().min(1).max(500), permission: z.literal(true, { errorMap: () => ({ message: 'Confirm you own the site or have permission to check it' }) }) }).parse(await c.req.json());
+    let report;
+    try {
+      report = await checkSite(url);
+    } catch (e) {
+      if (e instanceof SiteCheckError) throw new HTTPException(400, { message: e.message });
+      throw e;
+    }
+    const id = Number(
+      db().prepare('INSERT INTO site_checks (url, host, score, grade, items) VALUES (?, ?, ?, ?, ?)').run(report.url, report.host, report.score, report.letter, JSON.stringify(report.items)).lastInsertRowid,
+    );
+    logActivity(db(), 'site_checks', id, 'checked', `Checked website ${report.host}: grade ${report.letter} (${report.score}/100)`);
+    return c.json(siteCheckRow(id), 201);
+  });
+
+  api.post('/site-checks/:id/findings', async (c) => {
+    const check = siteCheckRow(idParam(c.req.param('id')));
+    const { ids } = z.object({ ids: z.array(z.string()).min(1).max(20) }).parse(await c.req.json());
+    const chosen = check.items.filter((i) => ids.includes(i.id) && i.status !== 'pass');
+    const reqId = db().prepare('SELECT id FROM requirements WHERE ref = ?');
+    const insert = db().prepare(
+      `INSERT INTO findings (title, description, requirement_id, severity, status, due_date, remediation) VALUES (?, ?, ?, ?, 'open', date('now', 'localtime', ?), ?)`,
+    );
+    const due: Record<string, string> = { critical: '+7 days', high: '+30 days', medium: '+60 days', low: '+90 days' };
+    const created = transaction(db(), () =>
+      chosen.map((i) => {
+        const req = i.refs.map((r) => reqId.get(r) as { id: number } | undefined).find(Boolean);
+        const fid = Number(insert.run(`${check.host}: ${i.title.toLowerCase()} (failed)`, `${i.found} ${i.why}`, req?.id ?? null, i.severity, due[i.severity], i.fix).lastInsertRowid);
+        db().prepare('UPDATE findings SET ref = ? WHERE id = ?').run(`FND-${String(fid).padStart(3, '0')}`, fid);
+        logActivity(db(), 'findings', fid, 'created', `Raised finding from website check of ${check.host}: ${i.title}`);
+        return fid;
+      }),
+    );
+    return c.json({ created: created.length });
   });
 
   extend?.(api);

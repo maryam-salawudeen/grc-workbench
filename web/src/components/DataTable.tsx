@@ -1,5 +1,6 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import type { Row } from '../api';
+import { Explained } from './Explain';
 
 export interface Column {
   key: string;
@@ -53,7 +54,7 @@ export function DataTable({
           <tr>
             {columns.map((c) => (
               <th key={c.key} className={`sortable ${c.className ?? ''}`} onClick={() => toggle(c.key)} aria-sort={sort?.key === c.key ? (sort.dir === 1 ? 'ascending' : 'descending') : undefined}>
-                {c.label}
+                <Explained text={c.label} />
                 {sort?.key === c.key ? (sort.dir === 1 ? ' ↑' : ' ↓') : ''}
               </th>
             ))}
