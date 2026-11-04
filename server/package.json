@@ -1,5 +1,6 @@
 {
   "name": "@grc/server",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "scripts": {

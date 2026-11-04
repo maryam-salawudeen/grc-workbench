@@ -2,6 +2,7 @@
   "name": "grc-workbench",
   "private": true,
   "description": "Enterprise Risk Assessment & GRC platform: risk register, controls mapped to NIST CSF 2.0 / ISO 27001:2022 / SOC 2, assessments, findings, policies and vendor risk.",
+  "license": "MIT",
   "type": "module",
   "workspaces": [
     "server",

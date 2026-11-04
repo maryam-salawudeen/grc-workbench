@@ -136,3 +136,11 @@ docker run -p 8080:8080 -v grc-data:/data grc-workbench
 ## Notes
 
 Maple Ridge Credit Union and all people, vendors and figures in the demo data are fictional. Framework requirement titles are short reference names; consult the published standards (NIST, ISO/IEC, AICPA) for full requirement text.
+
+## Contributing
+
+Issues and pull requests are welcome. For anything larger than a small fix, please open an issue first to talk it over. Run `npm test` and `npm run typecheck` before sending a pull request. Report security problems privately as described in [SECURITY.md](SECURITY.md).
+
+## License
+
+[MIT](LICENSE) © 2026 Maryam Salawudeen
